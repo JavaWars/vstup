@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--============================================================
+	Deployment Descriptor: web.xml
+=============================================================-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+
+
+  <welcome-file-list>
+    <welcome-file>home</welcome-file>
+  </welcome-file-list>
+
+<jsp-config>
+    <jsp-property-group>
+        <url-pattern>*.jsp</url-pattern>
+        <page-encoding>UTF-8</page-encoding>
+    </jsp-property-group>
+</jsp-config>
+
+  <filter>
+    <filter-name>EncodingFilter</filter-name>
+    <filter-class>com.lazarev.web.filters.EncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>EncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>CommandAccessFilter</filter-name>
+    <filter-class>com.lazarev.web.filters.AccessFilter</filter-class>
+    <init-param>
+      <param-name>SUPERADMIN</param-name>
+      <param-value>logout noCommand viewSettings</param-value>
+    </init-param>
+    <init-param>
+      <param-name>ADMIN</param-name>
+      <param-value>/pages/home_admin.jsp </param-value>
+    </init-param>
+    <init-param>
+      <param-name>USER</param-name>
+      <param-value>/pages/home_user.jsp</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>CommandAccessFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  
+  <!-- ===============================
+  			error pages
+   =================================-->
+  
+  <error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/WEB-INF/jsp/error_page.jsp</location>
+	</error-page>
+	
+	<error-page>
+		<error-code>404</error-code>
+		<location>/WEB-INF/jsp/error_page.jsp</location>
+	</error-page>
+	
+</web-app>
