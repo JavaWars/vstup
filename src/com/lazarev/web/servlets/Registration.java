@@ -15,12 +15,13 @@ import com.lazarev.db.dao.CityDAO;
 import com.lazarev.db.dao.RoleDAO;
 import com.lazarev.db.dao.UserDAO;
 import com.lazarev.db.entity.User;
+import com.lazarev.util.EmailService;
 import com.lazarev.web.Constants;
 
 @WebServlet("/registration")
 public class Registration extends HttpServlet {
 
-	private Logger logger = Logger.getLogger(Registration.class);
+	private static Logger logger = Logger.getLogger(Registration.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -51,15 +52,18 @@ public class Registration extends HttpServlet {
 		newUser.setPassword(request.getParameter("password"));
 		Role role = Role.USER;
 		newUser.setRoleId(new RoleDAO().getRoleIdByRoleName(role.getName()));
-		newUser.setCityId(new CityDAO().getCityIdByName(request.getParameter("city")));
+		newUser.setCityId(new CityDAO().get(request.getParameter("city")));
 		logger.trace("newUser" + newUser);
 		
 		new UserDAO().insert(newUser);
 		
 		request.getSession().setAttribute("ROLE", role.getName());
 		request.getSession().setAttribute("EMAIL", newUser.getEmail());
+		request.getSession().setAttribute("NAME",newUser.getName());
 		
-		response.sendRedirect(request.getContextPath() + Constants.PAGE_HOME);
+		EmailService.getInstance().sendMessage(newUser.getEmail(), "Welcome in vstup system", "welcome my dear user description");
+		
+		response.sendRedirect(request.getContextPath() + Constants.COMMAND_HOME);
 	}
 
 }

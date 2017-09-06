@@ -18,7 +18,7 @@
 
 		<div class="jumbotron row">
 
-			<div class="col-md-2 col-md-offset-5">
+			<div class="jumbotron col-md-4 col-md-offset-4">
 				<p>DEPARTMENT</p>
 
 				<form method="post" action="${context}/departament">

@@ -1,7 +1,6 @@
-package com.lazarev.web.servlets;
+package com.lazarev.web.servlets.user;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,15 +11,18 @@ import org.apache.log4j.Logger;
 
 import com.lazarev.web.Constants;
 
-@WebServlet("/logout")
-public class Logout extends HttpServlet {
-
-	private static Logger logger=Logger.getLogger(Logout.class);
+@WebServlet("/userStat")
+public class UserStat extends HttpServlet {
+	
+	private static final Logger LOGGER=Logger.getLogger(UserStat.class);
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.debug("User create LOGOUT action");
-		request.getSession().invalidate();
-		response.sendRedirect(request.getContextPath()+Constants.PAGE_LOGIN);
+	LOGGER.debug("userStat#doGet()");
+	request.getRequestDispatcher(Constants.PAGE_USER_STAT).forward(request, response);
+		
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 	}
 
 }

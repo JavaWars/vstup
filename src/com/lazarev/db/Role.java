@@ -2,7 +2,7 @@ package com.lazarev.db;
 
 public enum Role {
 	
-	USER("USER"), ADMIN("ADMIN"), SUPERADMIN("SUPERADMIN"),COMMON("COMMON");
+	USER("USER"), ADMIN("ADMIN");
 	
 	Role(String name){
 		this.name=name;

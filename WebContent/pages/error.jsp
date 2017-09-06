@@ -11,15 +11,41 @@
 
 	<div class="container theme-showcase" role="main">
 
-		<%-- HEADER --%>
-		<%@ include file="/pages/jspf/directive/header.jspf"%>
-		<%-- HEADER --%>
-
 		<c:if test="${not empty requestScope.errorMessage}">
 			<h3>${requestScope.errorMessage}</h3>
 		</c:if>
 
-		<%@ include file="/pages/jspf/directive/footer.jspf"%>
+		<%-- this way we obtain an information about an exception (if it has been occurred) --%>
+		<c:set var="code"
+			value="${requestScope['javax.servlet.error.status_code']}" />
+		<c:set var="message"
+			value="${requestScope['javax.servlet.error.message']}" />
+		<c:set var="exception"
+			value="${requestScope['javax.servlet.error.exception']}" />
+		<p class="bg-danger">
+
+			<c:if test="${not empty code}">
+				<p class="bg-danger">Error code: ${code}</p>
+			</c:if>
+
+			<c:if test="${not empty message}">
+				<p class="bg-danger">Message: ${message}</p>
+			</c:if>
+
+			<c:if test="${not empty exception}">
+				<p class="bg-danger">
+
+					<%
+						exception.printStackTrace(new PrintWriter(out));
+					%>
+				</p>
+			</c:if>
+
+		</p>
+
+
+		<br>
+		<a href="/vstup/home">Home</a>
 
 	</div>
 </body>

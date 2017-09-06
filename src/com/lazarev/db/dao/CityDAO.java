@@ -12,7 +12,7 @@ import com.mysql.jdbc.Statement;
 
 public class CityDAO extends DAO<City, Integer> {
 
-	private Logger logger = Logger.getLogger(CityDAO.class);
+	private static Logger logger = Logger.getLogger(CityDAO.class);
 
 	private static final String GET_CITY_ID_BY_NAME = "SELECT cities.id FROM cities WHERE cities.`name`=?";
 
@@ -68,7 +68,7 @@ public class CityDAO extends DAO<City, Integer> {
 	}
 
 
-	public int getCityIdByName(String cityName) {
+	public int get(String cityName) {
 		City city = new City();
 
 		//if exist

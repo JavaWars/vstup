@@ -19,7 +19,7 @@ import com.lazarev.web.Constants;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-	private Logger logger = Logger.getLogger(LoginServlet.class);
+	private static Logger logger = Logger.getLogger(LoginServlet.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -62,9 +62,11 @@ public class LoginServlet extends HttpServlet {
 			
 			logger.trace("Set ROLE"+role.getName());
 			request.getSession().setAttribute("ROLE", role.getName());
-			
-			logger.trace("redirecting to "+request.getContextPath()+Constants.PAGE_HOME);
-			response.sendRedirect(request.getContextPath()+Constants.PAGE_HOME);
+			request.getSession().setAttribute("EMAIL", user.getEmail());
+			request.getSession().setAttribute("NAME",user.getName());
+
+			logger.trace("redirecting to "+request.getContextPath()+Constants.COMMAND_HOME);
+			response.sendRedirect(request.getContextPath()+Constants.COMMAND_HOME);
 			//redirect to home
 		} else {
 			logger.trace("redirecting to "+request.getContextPath()+Constants.PAGE_ERROR);

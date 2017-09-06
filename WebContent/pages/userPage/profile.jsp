@@ -13,12 +13,16 @@
 	<%@ include file="/pages/jspf/directive/header.jspf"%>
 	<%-- HEADER --%>
 
-	<div class="container theme-showcase" role="main">
+	<div class="jumbotron container theme-showcasejumbotron" role="main">
+		<div class="jumbotron row">
+			PRO FILE
+			<%@ include file="/pages/jspf/directive/footer.jspf"%>
+		</div>
+	</div>
 
-	USERSLLIST
+
 
 	<%@ include file="/pages/jspf/directive/footer.jspf"%>
-	</div>
 
 </body>
 </html>

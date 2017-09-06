@@ -1,16 +1,13 @@
 <%--=========================================================================== 
 Footer. 
 ===========================================================================--%>
-
-<!-- <footer class="footer">
-	<div class="container">
-		<div class="well row">
+<!-- 
+<footer class="footer ">
+		<div class="row jumbotron">
 			<div class="col-md-4 col-md-offset-4">
-				<p id="footer">&copy; Created by Pavel Lazarev 2017</p>
+				<p class ="" id="footer">&copy; Created by Pavel Lazarev 2017</p>
 			</div>
 		</div>
-	</div>
 </footer>
  -->
-
 

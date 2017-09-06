@@ -11,7 +11,7 @@ import org.apache.tomcat.jdbc.pool.PoolProperties;
 
 public class MyTomcatPool {
 
-	private Logger logger=Logger.getLogger(MyTomcatPool.class);
+	private static Logger logger=Logger.getLogger(MyTomcatPool.class);
 	
 	private static MyTomcatPool tomcatPool;
 

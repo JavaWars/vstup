@@ -20,14 +20,14 @@
 	<!-- ======================================
 	MARKS for department
 	====================================== -->
-	<div class="container theme-showcase" role="main">
+	<div class="jumbotron container theme-showcase" role="main">
 
-		<div class="jumbotron row">
+		<div class="row">
 
-			<div class="col-md-4 col-md-offset-3">
+			<div class="jumbotron col-md-2 col-md-offset-10">
 
-				<div class="bs-example" data-example-id="simple-table">
-					<table class="table">
+				<div class=" bs-example" data-example-id="simple-table">
+					<table class="jumbotron table">
 						<thead>
 							<tr>
 								<th>#</th>

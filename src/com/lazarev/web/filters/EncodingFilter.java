@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 public class EncodingFilter implements Filter {
 
-	private Logger logger = Logger.getLogger(EncodingFilter.class);
+	private static Logger logger = Logger.getLogger(EncodingFilter.class);
 
 	private String encoding;
 

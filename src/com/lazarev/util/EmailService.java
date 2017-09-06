@@ -1,7 +1,13 @@
+package com.lazarev.util;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import org.apache.log4j.Logger;
+
 import java.util.Properties;
+
 
 /**
  * Created by Pavel on 07.04.2017.
@@ -17,17 +23,29 @@ https://accounts.google.com/DisplayUnlockCaptcha
 
  */
 public class EmailService {
+	
+	private static final Logger LOGGER=Logger.getLogger(EmailService.class);
+	
+	private static EmailService emailService;
+	
+	public static synchronized EmailService getInstance(){
+		if (emailService==null){
+			emailService=new EmailService("Mr.Postomat", "Mr.Postomat1");
+		}
+		return emailService;
+	}
+	
     private String from;
     private String password;
     private Properties props = new Properties();
-    public EmailService(String from,String fromPassword) {
+    private EmailService(String from,String fromPassword) {
         this.from=from;
         this.password=fromPassword;
 
         // Setup mail server
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");//
-        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");//!!
+        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");//
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         // Get the default Session object.
@@ -61,9 +79,9 @@ public class EmailService {
             // Send message
             Transport.send(message);
 
-            System.out.println("Sent all message successfully....");
+            LOGGER.trace("Sent all message successfully....");
         }catch (MessagingException mex) {
-            mex.printStackTrace();
+        	LOGGER.error(mex);
         }
     }
 }

@@ -27,7 +27,7 @@ import com.lazarev.web.Constants;
 
 public class AccessFilter implements Filter {
 
-	private Logger logger = Logger.getLogger(AccessFilter.class);
+	private static Logger logger = Logger.getLogger(AccessFilter.class);
 
 	private Map<Role, List<String>> accessMap = new HashMap<Role, List<String>>();
 
@@ -148,10 +148,8 @@ logger.debug("filter<");
 	public void init(FilterConfig fConfig) throws ServletException {
 		logger.debug("AccessFilter init");
 
-		putAndPrint(fConfig, Role.SUPERADMIN);
 		putAndPrint(fConfig, Role.ADMIN);
 		putAndPrint(fConfig, Role.USER);
-		// putAndPrint(fConfig, Role.COMMON);
 
 	}
 

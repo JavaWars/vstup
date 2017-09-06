@@ -1,6 +1,8 @@
 package com.lazarev.web.servlets;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,53 +13,44 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.Role;
+import com.lazarev.db.dao.DepartmentDAO;
+import com.lazarev.db.dao.UserDAO;
 import com.lazarev.web.Constants;
-import com.lazarev.web.servlets.operations.Operations;
+import com.lazarev.web.servlets.operations.PossibleOperations;
 
-@WebServlet("/home")
-public class Home extends HttpServlet {
+@WebServlet("/departments")
+public class Departments extends HttpServlet {
 
-	private static Logger logger = Logger.getLogger(Home.class);
+	private static final Logger LOGGER = Logger.getLogger(Departments.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		logger.debug(" SOMEBODY WANT SEE HOME PAGE ");
-
-		boolean roleConfirmed = true;
+		LOGGER.debug("Department#doGet()");
 
 		Object oRole = request.getSession().getAttribute("ROLE");
 		Role role = null;
 		if (oRole != null) {
-			// get role
 			role = Role.valueOf((String) oRole);
-		} else {
-			roleConfirmed = false;
 		}
-
-		request.getSession().setAttribute("operations",
-				Operations.getAvalibleOperations(role, request.getContextPath()));
-
+		request.setAttribute("departmens", new DepartmentDAO().getAll());
 		if (role != null) {
+			List<PossibleOperations> operations=new LinkedList<>();
 			switch (role) {
 			case ADMIN:
-				response.sendRedirect(request.getContextPath() + Constants.PAGE_DEPARTMENTS);
+				
+				operations.add(new PossibleOperations("delete","/delete"));
+				operations.add(new PossibleOperations("edit","/edit"));
 
 				break;
 
 			case USER:
-				response.sendRedirect(request.getContextPath() + Constants.PAGE_DEPARTMENTS);
+				operations.add(new PossibleOperations("send resume","/choose"));
 
 				break;
-			default:
-				roleConfirmed = false;
-				break;
 			}
+			request.setAttribute("oper", operations);
 		}
-		if (!roleConfirmed) {
-			logger.error(" Unknown user role. Redirect to login page");
-			request.getSession().invalidate();
-			response.sendRedirect(request.getContextPath() + Constants.PAGE_REGISTRATION);
-		}
+		request.getRequestDispatcher(Constants.PAGE_DEPARTMENTS).forward(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

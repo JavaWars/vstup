@@ -14,7 +14,7 @@ import com.lazarev.db.MySqlConnection.MyTomcatPool;
 //K=key
 public abstract class DAO<E,K> {
 
-	private Logger logger=Logger.getLogger(DAO.class);
+	private static Logger logger=Logger.getLogger(DAO.class);
 	
 	protected Connection connection=null;
 		

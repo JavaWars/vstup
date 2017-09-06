@@ -11,7 +11,7 @@ import com.lazarev.db.Role;
 
 public class RoleDAO extends DAO<Role, Integer> {
 
-	private Logger logger = Logger.getLogger(RoleDAO.class);
+	private static Logger logger = Logger.getLogger(RoleDAO.class);
 
 	private static final String GET_ROLE_BY_USER_ID = "SELECT roles.roleName FROM roles"
 			+ " INNER JOIN users ON users.id_role = roles.id where users.id=?";
