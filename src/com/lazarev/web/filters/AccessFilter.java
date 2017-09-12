@@ -23,6 +23,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.Role;
+import com.lazarev.db.dao.UserDAO;
 import com.lazarev.web.Constants;
 
 public class AccessFilter implements Filter {
@@ -39,51 +40,60 @@ public class AccessFilter implements Filter {
 			throws IOException, ServletException {
 		logger.debug("filter>");
 
-		if (!goIfAccessIsFree(request, response, chain)) {
+		String userLogin = (String) ((HttpServletRequest) request).getSession().getAttribute("EMAIL");
+		boolean banned = new UserDAO().isBlocked(userLogin);
+		if (banned) {
+			logger.info("banned user detected");
+			request.setAttribute("errorMessage", "You are banned on this site");
+			((HttpServletRequest) request).getSession().invalidate();
+			((HttpServletResponse)response).sendRedirect(((HttpServletRequest)request).getContextPath()+Constants.PAGE_ERROR);
+		} else {
+			if (!goIfAccessIsFree(request, response, chain)) {
 
-			logger.debug("not a freedom");
+				logger.debug("not a freedom");
 
-			// step 1 role exist? (no==> login)
-			Role role = getUserRoleIfExist(request);
+				// step 1 role exist? (no==> login)
+				Role role = getUserRoleIfExist(request);
 
-			if (role != null) {
-				logger.debug("ROLE in Session " + role);
+				if (role != null) {
+					logger.debug("ROLE in Session " + role);
 
-				// need to check access from settings
-				if (!isAccess(request, role)) {
+					// need to check access from settings
+					if ((!isAccess(request, role))) {
 
-					String path = Constants.PAGE_ACCESS_ERROR;
+						String path =((HttpServletRequest) request).getContextPath()+Constants.PAGE_ACCESS_ERROR;
+						logger.info("NO ACCESS, redirecting to " + path);
+						((HttpServletResponse)response).sendRedirect(path);
+//						request.getRequestDispatcher(path).forward(request, response);
 
-					logger.info("NO ACCESS, redirecting to " + path);
+					} else {
 
-					request.getRequestDispatcher(path).forward(request, response);
-
+						String path = ((HttpServletRequest) request).getServletPath();
+						logger.debug("User have access to seccurity Zone redddirecting to path " + path);
+						chain.doFilter(request, response);
+					}
 				} else {
 
-					String path = ((HttpServletRequest) request).getServletPath();
-
-					logger.debug("User have access to seccurity Zone redddirecting to path " + path);
+					String path = ((HttpServletRequest) request).getContextPath() + Constants.PAGE_LOGIN;
+					logger.info("NO ACCESS, redirecting to " + path);
+					((HttpServletResponse) response).sendRedirect(path);
 
 				}
-			} else {
 
-				String path = ((HttpServletRequest) request).getContextPath() + Constants.PAGE_LOGIN;
-
-				logger.info("NO ACCESS, redirecting to " + path);
-
-				((HttpServletResponse) response).sendRedirect(path);
 			}
-
+			else{
+				chain.doFilter(request, response);
+			}
 		}
-		chain.doFilter(request, response);
-logger.debug("filter<");
+
+		logger.debug("filter<");
 	}
 
 	private boolean goIfAccessIsFree(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
 		// ((HttpServletRequest) request).getContextPath()
-		
+
 		String path = ((HttpServletRequest) request).getServletPath();
 		if (!needAsses(path)) {
 			logger.debug("free for all users path " + path);

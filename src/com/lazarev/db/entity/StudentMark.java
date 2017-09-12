@@ -1,8 +1,8 @@
 package com.lazarev.db.entity;
 
-public class UserMark extends Mark{
+public class StudentMark extends Subject{
 	
-	private static final long serialVersionUID = 5783974656004616760L;
+	private static final long serialVersionUID = -2850096538588313673L;
 
 	private int userId;
 	

@@ -32,6 +32,8 @@ public class UserDAO extends DAO<User, Integer> {
 	private static final String SELECT_ALL_USERS_NOT_BANNED = "select users.* from users, roles"
 			+ " where (not users.id=any (select userId from ban)) and (roles.id=users.id_role) and (roles.roleName='USER')";
 
+	private static final String SELECT_IS_BLOCKED = "SELECT users.* FROM ban INNER JOIN users ON ban.userId = users.id where users.email=?";
+
 	@Override
 	public User get(Integer key) {
 		return null;
@@ -54,7 +56,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("can't get all users",e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -128,9 +130,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-
 			logger.error("cant get result from table user by query " + SELECT_USER_BY_LOGIN_AND_PASSWORD, e);
-
 		} finally {
 			close(prepared);
 			close(set);
@@ -138,39 +138,6 @@ public class UserDAO extends DAO<User, Integer> {
 		}
 		return false;
 	}
-
-	///////////////////////////////////////
-	// preparators
-	private User prepareUser(ResultSet resultSet) {
-		User user = new User();
-
-		try {
-			user.setId(resultSet.getInt("id"));
-			user.setEmail(resultSet.getString("email"));
-			user.setPassword(resultSet.getString("password"));
-			user.setName(resultSet.getString("name"));
-			user.setSecondName(resultSet.getString("secondName"));
-			user.setCityArea(resultSet.getString("area"));
-			user.setCityId(resultSet.getInt("id_city"));
-			user.setRoleId(resultSet.getInt("id_role"));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return user;
-	}
-
-	private void updateUserData(User user, User data) {
-		user.setId(data.getId());
-		user.setEmail(data.getEmail());
-		user.setPassword(data.getPassword());
-		user.setName(data.getName());
-		user.setSecondName(data.getSecondName());
-		user.setCityArea(data.getCityArea());
-		user.setCityId(data.getCityId());
-		user.setRoleId(data.getRoleId());
-	}
-
 	public List<User> getAllBanned() {
 		logger.trace("UserDAO#getAllBannedUsers()");
 		List<User> result = new LinkedList<>();
@@ -186,7 +153,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("can't get all banned",e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -211,7 +178,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("can't ban user",e);
 		} finally {
 			close(preparedStatement);
 			close(connection);
@@ -234,10 +201,9 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("cant unblock user",e);
 		} finally {
 			close(preparedStatement);
-
 			close(connection);
 		}
 	}
@@ -257,7 +223,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+			logger.error("can't get all users",e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -265,4 +231,63 @@ public class UserDAO extends DAO<User, Integer> {
 		}
 		return result;
 	}
+
+	public boolean isBlocked(String userLogin) {
+		boolean result=false;
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet=null;
+		try {
+			preparedStatement = getPreparedStatement(null, SELECT_IS_BLOCKED);
+			preparedStatement.setString(1, userLogin);
+			resultSet = preparedStatement.executeQuery();
+			
+			if (resultSet.next()) {
+				result=true;
+			}
+
+		} catch (SQLException e) {
+			logger.error("can't check is user blocked",e);
+		} finally {
+			close(preparedStatement);
+			close(resultSet);
+			close(connection);
+		}
+		
+		logger.trace("checking user "+userLogin+" is blocked="+result+" in the system");
+		return result;
+	}
+
+	///////////////////////////////////////
+	// preparators
+	private User prepareUser(ResultSet resultSet) {
+		User user = new User();
+
+		try {
+			user.setId(resultSet.getInt("id"));
+			user.setEmail(resultSet.getString("email"));
+			user.setPassword(resultSet.getString("password"));
+			user.setName(resultSet.getString("name"));
+			user.setSecondName(resultSet.getString("secondName"));
+			user.setCityArea(resultSet.getString("area"));
+			user.setCityId(resultSet.getInt("id_city"));
+			user.setRoleId(resultSet.getInt("id_role"));
+		} catch (SQLException e) {
+			logger.error("can't prepare user",e);
+		}
+
+		return user;
+	}
+
+	private void updateUserData(User user, User data) {
+		user.setId(data.getId());
+		user.setEmail(data.getEmail());
+		user.setPassword(data.getPassword());
+		user.setName(data.getName());
+		user.setSecondName(data.getSecondName());
+		user.setCityArea(data.getCityArea());
+		user.setCityId(data.getCityId());
+		user.setRoleId(data.getRoleId());
+	}
+
 }

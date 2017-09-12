@@ -1,7 +1,9 @@
 package com.lazarev.db.entity;
 
-public class DepartmentMark extends Mark{
-
+public class DepartmentSubject extends Subject{
+	
+	private static final long serialVersionUID = -4611888461646766600L;
+	
 	private double scale;
 
 	public double getScale() {

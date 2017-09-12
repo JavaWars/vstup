@@ -30,6 +30,8 @@ public class Constants {
 	public static final String COMMAND_ADMIN_STATISTIC = "/adminStat";
 	public static final String COMMAND_ADMIN_GET_USERS = "/cleanUser";//not banned users
 	public static final String COMMAND_ADMIN_GET_BLOCKED_USERS = "/bannedUser";
+	public static final String COMMAND_ADMIN_DELETE_DEPARTMNET = "/delDepartment";
+	public static final String COMMAND_ADMIN_EDIT_DEPARTMENT = "/editDepartment";
 	
 	//user command
 	public static final String COMMAND_USER_EDIT_PROFILE = "/profile";

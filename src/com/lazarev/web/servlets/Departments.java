@@ -13,8 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.Role;
+import com.lazarev.db.Sorters.DepartmentSorter;
 import com.lazarev.db.dao.DepartmentDAO;
 import com.lazarev.db.dao.UserDAO;
+import com.lazarev.db.entity.Department;
 import com.lazarev.web.Constants;
 import com.lazarev.web.servlets.operations.PossibleOperations;
 
@@ -26,30 +28,18 @@ public class Departments extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		LOGGER.debug("Department#doGet()");
+		String sortType = request.getParameter("sort");
+		LOGGER.info("sort " + sortType);
+		String departmantName = request.getParameter("departmentName");
+		LOGGER.info("departmentName " + departmantName);
 
-		Object oRole = request.getSession().getAttribute("ROLE");
-		Role role = null;
-		if (oRole != null) {
-			role = Role.valueOf((String) oRole);
+		List<Department> departments = null;
+		if (departmantName != null && departmantName.length() > 0) {
+			departments = new DepartmentDAO().getAllDepartmnetsWithName(departmantName);
+		} else {
+			departments = new DepartmentDAO().getAll();
 		}
-		request.setAttribute("departmens", new DepartmentDAO().getAll());
-		if (role != null) {
-			List<PossibleOperations> operations=new LinkedList<>();
-			switch (role) {
-			case ADMIN:
-				
-				operations.add(new PossibleOperations("delete","/delete"));
-				operations.add(new PossibleOperations("edit","/edit"));
-
-				break;
-
-			case USER:
-				operations.add(new PossibleOperations("send resume","/choose"));
-
-				break;
-			}
-			request.setAttribute("oper", operations);
-		}
+		request.setAttribute("departmens", DepartmentSorter.sort(sortType, departments));
 		request.getRequestDispatcher(Constants.PAGE_DEPARTMENTS).forward(request, response);
 	}
 

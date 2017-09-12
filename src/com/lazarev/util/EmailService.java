@@ -30,7 +30,7 @@ public class EmailService {
 	
 	public static synchronized EmailService getInstance(){
 		if (emailService==null){
-			emailService=new EmailService("Mr.Postomat", "Mr.Postomat1");
+			emailService=new EmailService("mr.postomat@gmail.com", "Mr.Postomat1");
 		}
 		return emailService;
 	}

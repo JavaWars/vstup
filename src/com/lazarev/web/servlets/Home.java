@@ -21,8 +21,7 @@ public class Home extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		logger.debug(" SOMEBODY WANT SEE HOME PAGE ");
-
+		logger.debug("SOMEBODY WANT SEE HOME PAGE");
 		boolean roleConfirmed = true;
 
 		Object oRole = request.getSession().getAttribute("ROLE");
@@ -40,12 +39,12 @@ public class Home extends HttpServlet {
 		if (role != null) {
 			switch (role) {
 			case ADMIN:
-				response.sendRedirect(request.getContextPath() + Constants.PAGE_DEPARTMENTS);
+				response.sendRedirect(request.getContextPath() + Constants.COMMAND_ALL_DEPARTMENTS);
 
 				break;
 
 			case USER:
-				response.sendRedirect(request.getContextPath() + Constants.PAGE_DEPARTMENTS);
+				response.sendRedirect(request.getContextPath() + Constants.COMMAND_USER_EDIT_PROFILE);
 
 				break;
 			default:

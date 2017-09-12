@@ -1,6 +1,6 @@
 package com.lazarev.db.entity;
 
-public class Department extends Entity {
+public class Department extends Base {
 
 	private static final long serialVersionUID = -2310242248201654120L;
 

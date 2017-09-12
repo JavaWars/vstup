@@ -1,5 +1,6 @@
 package com.lazarev.web.servlets;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -24,6 +25,7 @@ public class LoginServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		logger.debug("LoginServlet#doGet()");
+		
 		Object role = request.getSession().getAttribute("ROLE");
 		logger.debug("role= "+role);
 		if (role == null) {
@@ -42,7 +44,7 @@ public class LoginServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		logger.debug("");
-
+		
 		User user = new User();
 
 		user.setPassword(request.getParameter("password"));

@@ -11,18 +11,13 @@
 	<%@ include file="/pages/jspf/directive/header.jspf"%>
 	<%-- HEADER --%>
 
-	<script type="text/javascript">
-	function reload() {
-	    location.reload();
-	}
-	
+	<script type="text/javascript">	
 		function banUser(url, id) {
-			// Sending and receiving data in JSON format using POST mothod
-			//
+			
 			var xhttp = new XMLHttpRequest();
 			xhttp.onreadystatechange = function() {
 			if (this.readyState == 4 && this.status == 200) {
-			   // Typical action to be performed when the document is ready:
+			    location.reload();
 			}
 			};
 			xhttp.open("POST", url, true);

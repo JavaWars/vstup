@@ -1,9 +1,9 @@
 package com.lazarev.db.entity;
 
-public class Mark extends Entity {
+public class Subject extends Base {
 
-	private static final long serialVersionUID = -6641131080071260787L;
-
+	private static final long serialVersionUID = -2901013318005847389L;
+	
 	private String name;
 
 	public String getName() {

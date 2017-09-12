@@ -1,6 +1,9 @@
 package com.lazarev.web.servlets.admin;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,7 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.lazarev.db.dao.DepartmentDAO;
+import com.lazarev.db.entity.Department;
+import com.lazarev.db.entity.DepartmentSubject;
 import com.lazarev.web.Constants;
+import com.lazarev.web.json.JsonExtracter;
+import com.lazarev.web.servlets.helper.Helper;
 
 @WebServlet("/newDepartment")
 public class NewDepartment extends HttpServlet {
@@ -20,7 +28,7 @@ public class NewDepartment extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		LOGGER.debug("NewDepartment@doGet()");
-		request.getRequestDispatcher(Constants.PAGE_ADMIN_CREATE_NEW_DEPARTMENT).forward(request, response);;
+		request.getRequestDispatcher(Constants.PAGE_ADMIN_CREATE_NEW_DEPARTMENT).forward(request, response);
 
 	}
 
@@ -29,6 +37,11 @@ public class NewDepartment extends HttpServlet {
 		LOGGER.debug("NewDepartment@doPost()");
 
 		
+		Department department=new Department();
+		List<DepartmentSubject> marks=new LinkedList<>();
+		JsonExtracter.extractDepartmnet(Helper.getJsonQuery(request),department,marks);
+		new DepartmentDAO().insertDepartment(department, marks);
 	}
 
+		
 }

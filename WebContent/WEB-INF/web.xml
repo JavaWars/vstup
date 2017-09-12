@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	id="WebApp_ID" version="2.5">
-
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee" xmlns:jsp="http://java.sun.com/xml/ns/javaee/jsp" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
   <welcome-file-list>
     <welcome-file>home</welcome-file>
   </welcome-file-list>
@@ -34,11 +30,11 @@
     </init-param>
     <init-param>
       <param-name>ADMIN</param-name>
-      <param-value>/pages/home_admin.jsp /departments</param-value>
+      <param-value>/pages/home_admin.jsp /departments /adminStat /editDepartment /adminStat /blockUser /delDepartment /editDepartment /bannedUser /cleanUser /newDepartment /unblockUser</param-value>
     </init-param>
     <init-param>
       <param-name>USER</param-name>
-      <param-value>/pages/home_user.jsp /departments</param-value>
+      <param-value>/pages/home_user.jsp /departments /userStat /profile</param-value>
     </init-param>
   </filter>
   <filter-mapping>
@@ -49,8 +45,8 @@
     <exception-type>java.lang.Throwable</exception-type>
     <location>/pages/error.jsp</location>
   </error-page>
-  <!-- <error-page>
-    <error-code>404</error-code>
-    <location>/pages/error404.html</location>
-  </error-page> -->
+  <error-page>
+    <error-code>500</error-code>
+    <location>/pages/error.jsp</location>
+  </error-page>
 </web-app>

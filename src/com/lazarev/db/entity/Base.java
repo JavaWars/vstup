@@ -2,9 +2,9 @@ package com.lazarev.db.entity;
 
 import java.io.Serializable;
 
-public class Entity implements Serializable{
+public class Base implements Serializable{
 	
-	private static final long serialVersionUID = 1922082735744237775L;
+	private static final long serialVersionUID = 2449814243696094379L;
 	
 	private int id;
 

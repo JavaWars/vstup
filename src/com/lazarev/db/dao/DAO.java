@@ -83,9 +83,7 @@ public abstract class DAO<E,K> {
     	try {
 			closeRes.close();
 		} catch (Exception e) {
-
 			logger.error("Cannot close a resource: " + closeRes, e);
-
 		}
     }
     
@@ -94,10 +92,12 @@ public abstract class DAO<E,K> {
             try {
                 con.rollback();
             } catch (SQLException ex) {
-                
                 logger.error("Cannot rollback a resource: " + con, ex);
-            
             }
         }
+    }
+    
+    void setConnection(Connection connection){
+    	this.connection=connection;
     }
 }

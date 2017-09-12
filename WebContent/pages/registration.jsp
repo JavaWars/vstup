@@ -118,7 +118,7 @@
 					</div>
 					<div>
 						<input type="submit" value="create" /> <input type="reset"
-							value="clear" onclick="continueOrNot()"/>
+							value="clear" /><!-- //continueOrNot -->
 					</div>
 					<p id="validationResult"></p>
 				</form>
