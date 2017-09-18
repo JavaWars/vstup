@@ -3,20 +3,24 @@ package com.lazarev.db.dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.entity.City;
+import com.lazarev.db.entity.Department;
 import com.mysql.jdbc.Statement;
 
 public class CityDAO extends DAO<City, Integer> {
 
-	private static Logger logger = Logger.getLogger(CityDAO.class);
+	private static final Logger LOGGER = Logger.getLogger(CityDAO.class);
 
 	private static final String GET_CITY_ID_BY_NAME = "SELECT cities.id FROM cities WHERE cities.`name`=?";
 
 	private static final String INSERT_CITY = "insert into cities (name) values(?)";
+
+	private static final String SELECT_ALL_CITY_BY_NAME = "select * from cities where name like ?";
 
 	@Override
 	public City get(Integer key) {
@@ -57,7 +61,7 @@ public class CityDAO extends DAO<City, Integer> {
 			}
 		} catch (SQLException e) {
 
-			logger.error("cant insert city using QUERY: " + INSERT_CITY, e);
+			LOGGER.error("cant insert city using QUERY: " + INSERT_CITY, e);
 
 		} finally {
 			close(prepared);
@@ -92,7 +96,7 @@ public class CityDAO extends DAO<City, Integer> {
 			}
 		} catch (SQLException e) {
 
-			logger.error("cant getCityIdByName using QUERY: " + GET_CITY_ID_BY_NAME, e);
+			LOGGER.error("cant getCityIdByName using QUERY: " + GET_CITY_ID_BY_NAME, e);
 
 		} finally {
 			close(prepared);
@@ -103,4 +107,33 @@ public class CityDAO extends DAO<City, Integer> {
 		
 		return city.getId();
 	}
+
+	public List<String> getAllCitysWithName(String cityName) {
+		LOGGER.debug("CityDAO#getAllCitysWithName()");
+		List<String> result = new LinkedList<>();
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = getPreparedStatement(null, SELECT_ALL_CITY_BY_NAME);
+			String val="%"+cityName+"%";
+			LOGGER.info(val);
+			preparedStatement.setString(1, val);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				result.add(resultSet.getString("name"));
+			}
+
+		} catch (SQLException e) {
+			LOGGER.error("can not get Departments  with name",e);
+		} finally {
+			close(preparedStatement);
+			close(resultSet);
+			close(connection);
+		}
+		return result;
+
+	}
+
 }

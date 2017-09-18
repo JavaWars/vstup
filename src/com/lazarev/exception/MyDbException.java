@@ -1,6 +1,6 @@
 package com.lazarev.exception;
 
-public class MyDbException extends Exception{
+public class MyDbException extends Exception {
 
 	public MyDbException() {
 		super();

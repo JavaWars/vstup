@@ -38,57 +38,69 @@
 
 			<form action="departments" method="get" class="jumbotron">
 				<div>
-					<p>FILTER and SORTER</p>
+					<p>
+						<tags:lang text="filter_sorter"></tags:lang>
+					</p>
 				</div>
-				<p>department name</p>
+				<p>
+					<tags:lang text="departmentName"></tags:lang>
+				</p>
 				<input type="text" name="departmentName" /> <select name="sort">
 					<option value="name a-z">name a-z</option>
 					<option value="total>">places total max to min</option>
 					<option value="gov>">places gov max to min</option>
 					<option value="name z-a">name z-a</option>
-					<option value="total<">places total min to max </option>
+					<option value="total<">places total min to max</option>
 					<option value="gov<">places gov min to max</option>
-				</select> <input type="submit" />
+				</select> <input type="submit" value="<tags:lang text="filter"></tags:lang>" />
 			</form>
 
 			<!-- FILTER AND SORTER FIN -->
-			<div class="jumbotron bs-example" data-example-id="simple-table">
-				<table class="table">
-					<thead>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th><tags:lang text="department"></tags:lang></th>
+						<th><tags:lang text="placesGov"></tags:lang></th>
+						<th><tags:lang text="placesTot"></tags:lang></th>
+						<th><tags:lang text="operation"></tags:lang></th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${departmens}" var="dep">
 						<tr>
-							<th>#</th>
-							<th>Department</th>
-							<th>Places for gov money</th>
-							<th>Places total</th>
-							<th>Operations</th>
+							<th scope="row"></th>
+							<td>${dep.name}</td>
+							<td>${dep.placeGov}</td>
+							<td>${dep.totaPlace}</td>
+							<td><c:choose>
+									<c:when test="${ROLE=='ADMIN'}">
+										<button type="button" class="btn btn-primary "
+											onclick="deleteDepartment('delDepartment',${dep.id})">
+											<tags:lang text="delete"></tags:lang>
+										</button>
+										<button type="button" class="btn btn-primary "
+											onclick="go('editDepartment',${dep.id})">
+											<tags:lang text="edit"></tags:lang>
+										</button>
+										<button type="button" class="btn btn-primary "
+											onclick="go('departmentRating',${dep.id})">
+											<tags:lang text="documentation"></tags:lang>
+										</button>
+									</c:when>
+
+									<c:when test="${ROLE=='USER'}">
+										<button type="button" class="btn btn-primary "
+											onclick="go('enter',${dep.id})">
+											<tags:lang text="enter"></tags:lang>
+										</button>
+									</c:when>
+								</c:choose></td>
 						</tr>
-					</thead>
-					<tbody>
-						<c:forEach items="${departmens}" var="dep">
-							<tr>
-								<th scope="row"></th>
-								<td>${dep.name}</td>
-								<td>${dep.placeDov}</td>
-								<td>${dep.totaPlace}</td>
-								<td><c:choose>
-										<c:when test="${ROLE=='ADMIN'}">
-											<button type="button" class="btn btn-primary "
-												onclick="deleteDepartment('delDepartment',${dep.id})">delete</button>
-											<button type="button" class="btn btn-primary "
-												onclick="go('editDepartment',${dep.id})">edit</button>
-										</c:when>
+					</c:forEach>
 
-										<c:when test="${ROLE=='USER'}">
-											<button type="button" class="btn btn-primary "
-												onclick="go('enter',${dep.id})">enter</button>
-										</c:when>
-									</c:choose>
-							</tr>
-						</c:forEach>
-
-					</tbody>
-				</table>
-			</div>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<%@include file="/pages/jspf/directive/footer.jspf"%>

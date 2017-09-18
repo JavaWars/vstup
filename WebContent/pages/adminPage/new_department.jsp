@@ -1,4 +1,3 @@
-<%@ page import="java.io.PrintWriter"%>
 <%@ include file="/pages/jspf/directive/page.jspf"%>
 
 <html>
@@ -55,6 +54,8 @@
 	</script>
 </c:if>
 
+<script type="text/javascript" src="pages/js/template.js"></script>
+
 <script type="text/javascript">
 	var list = [];
 	var nextId = 0;
@@ -100,7 +101,7 @@
 								+ markScale
 								+ '</td>'
 								+ '<td><button class="btn btn-danger" onclick="removeRow('
-								+ idNext + ')">remove</td>' + '</tr>');
+								+ idNext + ')"><tags:lang text="remove"></tags:lang></td>' + '</tr>');
 
 	}
 
@@ -173,21 +174,41 @@
 			return false;
 		}
 	}
-	function checkTextField(field, validationResult) {
-
-		if ((field.value == "") || (field.value.length > 30)) {
-
-			document.getElementById(validationResult).style.color = "red";
-			console.log("is not valid " + validationResult);
-		} else {
-			document.getElementById(validationResult).style.color = "rgb(100,100,200)";
-			console.log("is valid " + validationResult);
-			return true;
-		}
-		return false;
-	}
 </script>
 
+
+<!-- autocomplite -->
+<link rel="stylesheet"
+	href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--end autocomplite -->
+
+<script type="text/javascript">
+$(function() {
+    $( "#markName" ).autocomplete({
+      source: function( request, response ) {
+        $.ajax({
+          url: "autocomplete/subject",
+          dataType: "json",
+          data: {
+            term: request.term
+          },
+          success: function( data ) {
+            response( data );
+            console.log(data);
+          }
+        });
+      },
+      minLength: 2,
+      select: function( event, ui ) {
+        console.log( ui.item ?
+          "Selected: " + ui.item.label :
+          "Nothing selected, input was " + this.value);
+      },
+    });
+  });
+</script>
 
 <body>
 
@@ -195,32 +216,37 @@
 	<%@ include file="/pages/jspf/directive/header.jspf"%>
 	<%-- HEADER --%>
 
-	<!-- <script type="text/javascript" src="/pages/js/template.js"></script>
- -->
 
 	<div class="container theme-showcase" role="main">
-		<c:set var="context" value="${pageContext.request.contextPath}" />
 
 		<div class="jumbotron row">
 
 			<div class="jumbotron col-md-4 col-md-offset-4">
-				<p>DEPARTMENT</p>
-				<%-- 
-				<form method="post" action="${context}/departament">
- --%>
+				<p>
+					<tags:lang text="department"></tags:lang>
+				</p>
+
 				<div>
-					<p id="departmentNameValidation">Department Name</p>
+					<p id="departmentNameValidation">
+						<tags:lang text="departmentName"></tags:lang>
+					</p>
 					<input type="text" id="departmentName" name="departmentName"
 						onblur="checkTextField(this,'departmentNameValidation');" /></input>
 				</div>
 				<div>
-					<p id="placesTotalValidation">Places total</p>
-					<input type="number" id="placesTotal" name="placesTotal"
+					<p id="placesTotalValidation">
+						<tags:lang text="placesTot"></tags:lang>
+					</p>
+					<input type="number" min="0" max="1000" id="placesTotal"
+						name="placesTotal"
 						onblur="checkTextField(this,'placesTotalValidation');" /></input>
 				</div>
 				<div>
-					<p id="placesGovValidation">Places Gov</p>
-					<input type="number" id="placesGov" name="placesGov"
+					<p id="placesGovValidation">
+						<tags:lang text="placesGov"></tags:lang>
+					</p>
+					<input type="number" min="0" max="1000" id="placesGov"
+						name="placesGov"
 						onblur="checkTextField(this,'placesGovValidation');" /></input>
 				</div>
 
@@ -236,9 +262,9 @@
 					<table class="table" id="myTable">
 						<tr>
 							<th>#</th>
-							<th>Mark name</th>
-							<th>mark scale</th>
-							<th>Operations</th>
+							<th><tags:lang text="subject"></tags:lang></th>
+							<th><tags:lang text="subjectScale"></tags:lang></th>
+							<th><tags:lang text="operation"></tags:lang></th>
 						</tr>
 						<tbody></tbody>
 						<!--rows will be generated here (using jquery, see function add row)-->
@@ -246,14 +272,19 @@
 
 						<tr>
 							<th scope="row"></th>
-							<td><input type="text" id="markName" /></td>
+							<td>
+								<div class="ui-widget">
+									<input id="markName" type="text" name="markName">
+								</div>
+							</td>
 							<td><input type="number" id="markScale" /></td>
 							<td>
 								<!-- 
 					admin want add this mark to table
 					 -->
-								<button type="button" class="btn btn-primary" onclick="addRow()">ADD</button>
-								<!-- Indicates a successful or positive action -->
+								<button type="button" class="btn btn-primary" onclick="addRow()">
+									<tags:lang text="add"></tags:lang>
+								</button> <!-- Indicates a successful or positive action -->
 								<p id="markValidation"></p>
 
 							</td>
@@ -266,10 +297,15 @@
 
 					<c:choose>
 						<c:when test="${isEditPage==true}">
-							<button value="yes" class="btn btn-success" onclick="update(${id})">update</button>
+							<button value="yes" class="btn btn-success"
+								onclick="update(${id})">
+								<tags:lang text="update"></tags:lang>
+							</button>
 						</c:when>
 						<c:otherwise>
-							<button value="yes" class="btn btn-success" onclick="create()">create</button>
+							<button value="yes" class="btn btn-success" onclick="create()">
+								<tags:lang text="create"></tags:lang>
+							</button>
 						</c:otherwise>
 					</c:choose>
 

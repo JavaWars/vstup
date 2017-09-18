@@ -28,7 +28,6 @@ public class BlockUser extends HttpServlet {
 			LOGGER.trace("admin want ban user" + userId);
 		}
 
-//		response.sendRedirect("/vstup/cleanUser");
 	}
 
 }

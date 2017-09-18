@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.lazarev.db.MySqlConnection.MyTomcatPool;
 import com.lazarev.db.entity.User;
 
 public class UserDAO extends DAO<User, Integer> {
@@ -34,6 +33,8 @@ public class UserDAO extends DAO<User, Integer> {
 
 	private static final String SELECT_IS_BLOCKED = "SELECT users.* FROM ban INNER JOIN users ON ban.userId = users.id where users.email=?";
 
+	private static final String SELECT_USER_BY_EMAIL = "Select * from users where email=? ";
+
 	@Override
 	public User get(Integer key) {
 		return null;
@@ -56,7 +57,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			logger.error("can't get all users",e);
+			logger.error("can't get all users", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -108,11 +109,39 @@ public class UserDAO extends DAO<User, Integer> {
 	///////////////////////////////////////
 	// other operation
 
+	public int getIdByEmail(String login){
+		logger.debug("select id by email"+login);
+
+		int result=0;
+		
+		prepareConnectionToWork(connection);
+		PreparedStatement prepared = getPreparedStatement(connection, SELECT_USER_BY_EMAIL);
+		ResultSet set = null;
+
+		try {
+			int k = 1;
+			prepared.setString(k++, login);
+
+			set = prepared.executeQuery();
+
+			if (set.next()) {
+				result=set.getInt("id");
+				logger.info(result);
+			}
+
+		} catch (SQLException e) {
+			logger.error("can't get result from table user by query " + SELECT_USER_BY_EMAIL, e);
+		} finally {
+			close(prepared);
+			close(set);
+		}
+		return result;
+	}
+	
 	public boolean ckeck(User user) {
 
 		logger.debug("checking User");
-		connection = MyTomcatPool.getInstance().getConnection();
-
+		prepareConnectionToWork(connection);
 		PreparedStatement prepared = getPreparedStatement(connection, SELECT_USER_BY_LOGIN_AND_PASSWORD);
 
 		ResultSet set = null;
@@ -138,6 +167,7 @@ public class UserDAO extends DAO<User, Integer> {
 		}
 		return false;
 	}
+
 	public List<User> getAllBanned() {
 		logger.trace("UserDAO#getAllBannedUsers()");
 		List<User> result = new LinkedList<>();
@@ -153,7 +183,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			logger.error("can't get all banned",e);
+			logger.error("can't get all banned", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -178,7 +208,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			logger.error("can't ban user",e);
+			logger.error("can't ban user", e);
 		} finally {
 			close(preparedStatement);
 			close(connection);
@@ -201,7 +231,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			logger.error("cant unblock user",e);
+			logger.error("cant unblock user", e);
 		} finally {
 			close(preparedStatement);
 			close(connection);
@@ -223,7 +253,7 @@ public class UserDAO extends DAO<User, Integer> {
 			}
 
 		} catch (SQLException e) {
-			logger.error("can't get all users",e);
+			logger.error("can't get all users", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -233,28 +263,28 @@ public class UserDAO extends DAO<User, Integer> {
 	}
 
 	public boolean isBlocked(String userLogin) {
-		boolean result=false;
-		
+		boolean result = false;
+
 		PreparedStatement preparedStatement = null;
-		ResultSet resultSet=null;
+		ResultSet resultSet = null;
 		try {
 			preparedStatement = getPreparedStatement(null, SELECT_IS_BLOCKED);
 			preparedStatement.setString(1, userLogin);
 			resultSet = preparedStatement.executeQuery();
-			
+
 			if (resultSet.next()) {
-				result=true;
+				result = true;
 			}
 
 		} catch (SQLException e) {
-			logger.error("can't check is user blocked",e);
+			logger.error("can't check is user blocked", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
 			close(connection);
 		}
-		
-		logger.trace("checking user "+userLogin+" is blocked="+result+" in the system");
+
+		logger.trace("checking user " + userLogin + " is blocked=" + result + " in the system");
 		return result;
 	}
 
@@ -273,7 +303,7 @@ public class UserDAO extends DAO<User, Integer> {
 			user.setCityId(resultSet.getInt("id_city"));
 			user.setRoleId(resultSet.getInt("id_role"));
 		} catch (SQLException e) {
-			logger.error("can't prepare user",e);
+			logger.error("can't prepare user", e);
 		}
 
 		return user;

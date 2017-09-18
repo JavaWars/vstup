@@ -75,6 +75,8 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 		return result;
 	}
 
+	
+	
 	@Override
 	public boolean delete(Integer id) {
 		boolean result = false;
@@ -106,7 +108,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 		try {
 			int k = 1;
 			preparedStatement.setString(k++, entity.getName());
-			preparedStatement.setInt(k++, entity.getPlaceDov());
+			preparedStatement.setInt(k++, entity.getPlaceGov());
 			preparedStatement.setInt(k++, entity.getTotaPlace());
 			preparedStatement.setInt(k++, entity.getId());
 
@@ -133,7 +135,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			preparedStatement = connection.prepareStatement(INSERT_DEPARTMNET, Statement.RETURN_GENERATED_KEYS);
 			int k = 1;
 			preparedStatement.setString(k++, entity.getName());
-			preparedStatement.setInt(k++, entity.getPlaceDov());
+			preparedStatement.setInt(k++, entity.getPlaceGov());
 			preparedStatement.setInt(k++, entity.getTotaPlace());
 
 			if (preparedStatement.executeUpdate() == 1) {
@@ -235,7 +237,6 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-				LOGGER.info("");
 				result.add(prepareDepartment(resultSet));
 			}
 
@@ -258,7 +259,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 		try {
 			department.setId(resultSet.getInt("id"));
 			department.setName(resultSet.getString("name"));
-			department.setPlaceDov(resultSet.getInt("place_government"));
+			department.setPlaceGov(resultSet.getInt("place_government"));
 			department.setTotaPlace(resultSet.getInt("place_total"));
 		} catch (SQLException e) {
 			LOGGER.error("CAN NOT PREPARE Department", e);
@@ -272,7 +273,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 		try {
 			department.setId(resultSet.getInt("id"));
 			department.setName(resultSet.getString("name"));
-			department.setPlaceDov(resultSet.getInt("place_government"));
+			department.setPlaceGov(resultSet.getInt("place_government"));
 			department.setTotaPlace(resultSet.getInt("place_total"));
 		} catch (SQLException e) {
 			LOGGER.error("CAN NOT PREPARE Department", e);

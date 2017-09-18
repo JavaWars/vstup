@@ -1,7 +1,6 @@
 package com.lazarev.web.servlets;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,13 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.lazarev.db.Role;
 import com.lazarev.db.Sorters.DepartmentSorter;
 import com.lazarev.db.dao.DepartmentDAO;
-import com.lazarev.db.dao.UserDAO;
 import com.lazarev.db.entity.Department;
 import com.lazarev.web.Constants;
-import com.lazarev.web.servlets.operations.PossibleOperations;
 
 @WebServlet("/departments")
 public class Departments extends HttpServlet {
@@ -41,11 +37,6 @@ public class Departments extends HttpServlet {
 		}
 		request.setAttribute("departmens", DepartmentSorter.sort(sortType, departments));
 		request.getRequestDispatcher(Constants.PAGE_DEPARTMENTS).forward(request, response);
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
 	}
 
 }

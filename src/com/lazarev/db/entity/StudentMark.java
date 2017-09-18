@@ -6,7 +6,7 @@ public class StudentMark extends Subject{
 
 	private int userId;
 	
-	private int mark;
+	private double mark;
 
 	public int getUserId() {
 		return userId;
@@ -16,11 +16,11 @@ public class StudentMark extends Subject{
 		this.userId = userId;
 	}
 
-	public int getMark() {
+	public double getMark() {
 		return mark;
 	}
 
-	public void setMark(int mark) {
+	public void setMark(double mark) {
 		this.mark = mark;
 	}
 

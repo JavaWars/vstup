@@ -1,18 +1,33 @@
+<%@ include file="/pages/jspf/directive/page.jspf"%>
 <%--=========================================================================== 
-Header (top area). 
+Header 
 ===========================================================================--%>
-
 <nav class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
 		<div class="navbar-header">
-
-			<p class="navbar-brand">welcome ${sessionScope.NAME}</p>
+			<p class="navbar-brand">
+				<tags:lang text="Hello"></tags:lang>
+				${sessionScope.NAME}
+			</p>
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<c:forEach items="${sessionScope.operations}" var="operation">
-					<li><a href="${operation.path}">${operation.operation} </a></li>
-				</c:forEach>
+				<c:choose>
+					<c:when test="${ROLE=='ADMIN'}">
+						<li><a href="departments"><tags:lang text="department"></tags:lang></a></li>
+						<li><a href="newDepartment"><tags:lang
+									text="newDepartment"></tags:lang></a></li>
+						<li><a href="cleanUser"><tags:lang text="users"></tags:lang></a></li>
+						<li><a href="bannedUser"><tags:lang text="usersBlocked"></tags:lang></a></li>
+					</c:when>
+					<c:when test="${ROLE=='USER'}">
+						<li><a href="userMark"><tags:lang text="profile"></tags:lang></a></li>
+						<li><a href="departments"><tags:lang text="department"></tags:lang></a></li>
+						<li><a href="userStat"><tags:lang text="statistic"></tags:lang></a></li>
+					</c:when>
+				</c:choose>
+				<li><a href="language"><tags:lang text="Language"></tags:lang></a></li>
+				<li><a href="logout"><tags:lang text="Logout"></tags:lang></a></li>
 			</ul>
 		</div>
 	</div>

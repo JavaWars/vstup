@@ -2,13 +2,13 @@ package com.lazarev.db.entity;
 
 public class Department extends Base {
 
-	private static final long serialVersionUID = -2310242248201654120L;
+	private static final long serialVersionUID = 5704784936415927250L;
 
 	private String name;
 
 	private int totaPlace;
 
-	private int placeDov;
+	private int placeGov;
 
 	public String getName() {
 		return name;
@@ -26,17 +26,17 @@ public class Department extends Base {
 		this.totaPlace = totaPlace;
 	}
 
-	public int getPlaceDov() {
-		return placeDov;
+	public int getPlaceGov() {
+		return placeGov;
 	}
 
-	public void setPlaceDov(int placeDov) {
-		this.placeDov = placeDov;
+	public void setPlaceGov(int placeGov) {
+		this.placeGov = placeGov;
 	}
 
 	@Override
 	public String toString() {
-		return "Department [name=" + name + ", totaPlace=" + totaPlace + ", placeDov=" + placeDov + "]";
+		return "Department [name=" + name + ", totaPlace=" + totaPlace + ", placeDov=" + placeGov + "]";
 	}
 
 }

@@ -28,9 +28,9 @@ public class GetUsersClean extends HttpServlet {
 
 		List<User> users = new UserDAO().getAllNotBanned();
 
+		
+		request.setAttribute("isPageForBlocking", true);
 		request.setAttribute("users", users);
-		request.setAttribute("action", "Ban this user");
-		request.setAttribute("href", request.getContextPath() + "/blockUser");
 
 		request.getRequestDispatcher(Constants.PAGE_ADMIN_ALL_USERS).forward(request, response);
 	}

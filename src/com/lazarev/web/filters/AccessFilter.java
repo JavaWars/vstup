@@ -33,20 +33,21 @@ public class AccessFilter implements Filter {
 	private Map<Role, List<String>> accessMap = new HashMap<Role, List<String>>();
 
 	public void destroy() {
-
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		logger.debug("filter>");
 
+		// user email
 		String userLogin = (String) ((HttpServletRequest) request).getSession().getAttribute("EMAIL");
+		// checking is user banned by admin
 		boolean banned = new UserDAO().isBlocked(userLogin);
 		if (banned) {
 			logger.info("banned user detected");
-			request.setAttribute("errorMessage", "You are banned on this site");
 			((HttpServletRequest) request).getSession().invalidate();
-			((HttpServletResponse)response).sendRedirect(((HttpServletRequest)request).getContextPath()+Constants.PAGE_ERROR);
+			((HttpServletRequest) request).setAttribute("errorMessage", "You are banned on this site");
+			((HttpServletRequest) request).getRequestDispatcher(Constants.PAGE_ERROR).forward(request, response);
 		} else {
 			if (!goIfAccessIsFree(request, response, chain)) {
 
@@ -58,30 +59,32 @@ public class AccessFilter implements Filter {
 				if (role != null) {
 					logger.debug("ROLE in Session " + role);
 
-					// need to check access from settings
+					// need to check access from settings for current user
 					if ((!isAccess(request, role))) {
 
-						String path =((HttpServletRequest) request).getContextPath()+Constants.PAGE_ACCESS_ERROR;
+						String path = ((HttpServletRequest) request).getContextPath() + Constants.PAGE_ACCESS_ERROR;
 						logger.info("NO ACCESS, redirecting to " + path);
-						((HttpServletResponse)response).sendRedirect(path);
-//						request.getRequestDispatcher(path).forward(request, response);
+
+						((HttpServletResponse) response).sendRedirect(path);
 
 					} else {
 
-						String path = ((HttpServletRequest) request).getServletPath();
-						logger.debug("User have access to seccurity Zone redddirecting to path " + path);
+						logger.debug("User have access to seccurity Zone redddirecting to path "
+								+ ((HttpServletRequest) request).getServletPath());
+
 						chain.doFilter(request, response);
+
 					}
 				} else {
 
-					String path = ((HttpServletRequest) request).getContextPath() + Constants.PAGE_LOGIN;
+					String path = Constants.COMMAND_LOGIN;
 					logger.info("NO ACCESS, redirecting to " + path);
 					((HttpServletResponse) response).sendRedirect(path);
 
 				}
 
-			}
-			else{
+			} else {
+				// access is free for this page
 				chain.doFilter(request, response);
 			}
 		}
@@ -91,8 +94,6 @@ public class AccessFilter implements Filter {
 
 	private boolean goIfAccessIsFree(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-
-		// ((HttpServletRequest) request).getContextPath()
 
 		String path = ((HttpServletRequest) request).getServletPath();
 		if (!needAsses(path)) {
@@ -115,10 +116,11 @@ public class AccessFilter implements Filter {
 
 		} else {
 
-			role = Role.valueOf((String) session.getAttribute("ROLE"));
-
-			if (role == null) {
+			Object objRole = session.getAttribute("ROLE");
+			if (objRole != null) {
+				role = Role.valueOf((String) objRole);
 				logger.info("USER ROLE is null");
+
 			}
 		}
 		return role;
@@ -183,5 +185,4 @@ public class AccessFilter implements Filter {
 		}
 		return list;
 	}
-
 }

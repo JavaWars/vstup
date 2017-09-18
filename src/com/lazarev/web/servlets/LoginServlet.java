@@ -1,6 +1,5 @@
 package com.lazarev.web.servlets;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -30,7 +29,7 @@ public class LoginServlet extends HttpServlet {
 		logger.debug("role= "+role);
 		if (role == null) {
 			
-			response.sendRedirect(request.getContextPath() + Constants.PAGE_LOGIN);
+			request.getRequestDispatcher(Constants.PAGE_LOGIN).forward(request, response);
 		
 		} else {
 			
@@ -50,8 +49,6 @@ public class LoginServlet extends HttpServlet {
 		user.setPassword(request.getParameter("password"));
 
 		user.setEmail(request.getParameter("email"));
-
-//		logger.trace(user);
 		
 		UserDAO userDB = new UserDAO();
 
@@ -67,13 +64,13 @@ public class LoginServlet extends HttpServlet {
 			request.getSession().setAttribute("EMAIL", user.getEmail());
 			request.getSession().setAttribute("NAME",user.getName());
 
-			logger.trace("redirecting to "+request.getContextPath()+Constants.COMMAND_HOME);
-			response.sendRedirect(request.getContextPath()+Constants.COMMAND_HOME);
+			logger.trace("redirecting to "+Constants.COMMAND_HOME);
+			response.sendRedirect(Constants.COMMAND_HOME);
 			//redirect to home
 		} else {
-			logger.trace("redirecting to "+request.getContextPath()+Constants.PAGE_ERROR);
-			response.sendRedirect(request.getContextPath()+Constants.PAGE_ERROR);
-			//redirect to login or error
+			logger.trace("redirecting to "+Constants.PAGE_ERROR);
+			request.setAttribute("errorMessage", "incorrect email or password");
+			request.getRequestDispatcher(Constants.PAGE_ERROR).forward(request, response);
 		}
 
 

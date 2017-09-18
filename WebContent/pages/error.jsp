@@ -45,7 +45,7 @@
 
 
 		<br>
-		<a href="/vstup/home">Home</a>
+		<a href="home">Home</a>
 
 	</div>
 </body>

@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 
 import com.lazarev.db.Role;
 import com.lazarev.web.Constants;
-import com.lazarev.web.servlets.operations.Operations;
 
 @WebServlet("/home")
 public class Home extends HttpServlet {
@@ -22,10 +21,11 @@ public class Home extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		logger.debug("SOMEBODY WANT SEE HOME PAGE");
+		
 		boolean roleConfirmed = true;
-
-		Object oRole = request.getSession().getAttribute("ROLE");
 		Role role = null;
+		
+		Object oRole = request.getSession().getAttribute("ROLE");
 		if (oRole != null) {
 			// get role
 			role = Role.valueOf((String) oRole);
@@ -33,19 +33,13 @@ public class Home extends HttpServlet {
 			roleConfirmed = false;
 		}
 
-		request.getSession().setAttribute("operations",
-				Operations.getAvalibleOperations(role, request.getContextPath()));
-
-		if (role != null) {
+		if (roleConfirmed) {
 			switch (role) {
 			case ADMIN:
-				response.sendRedirect(request.getContextPath() + Constants.COMMAND_ALL_DEPARTMENTS);
-
+				response.sendRedirect(Constants.COMMAND_ALL_DEPARTMENTS);
 				break;
-
 			case USER:
-				response.sendRedirect(request.getContextPath() + Constants.COMMAND_USER_EDIT_PROFILE);
-
+				response.sendRedirect(Constants.COMMAND_USER_PROFILE);
 				break;
 			default:
 				roleConfirmed = false;
@@ -55,13 +49,9 @@ public class Home extends HttpServlet {
 		if (!roleConfirmed) {
 			logger.error(" Unknown user role. Redirect to login page");
 			request.getSession().invalidate();
-			response.sendRedirect(request.getContextPath() + Constants.PAGE_REGISTRATION);
+			response.sendRedirect(Constants.COMMAND_REGISTRATION);
+//			request.getRequestDispatcher(Constants.COMMAND_REGISTRATION).forward(request, response);
 		}
-	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-
 	}
 
 }

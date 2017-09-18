@@ -31,7 +31,7 @@ public class Registration extends HttpServlet {
 		logger.debug("role= "+role);
 		if (role == null) {
 
-			response.sendRedirect(request.getContextPath() + Constants.PAGE_REGISTRATION);
+			request.getRequestDispatcher(Constants.PAGE_REGISTRATION).forward(request, response);
 		
 		} else {
 			
@@ -63,7 +63,7 @@ public class Registration extends HttpServlet {
 		
 		EmailService.getInstance().sendMessage(newUser.getEmail(), "Welcome in vstup system", "welcome my dear user description");
 		
-		response.sendRedirect(request.getContextPath() + Constants.COMMAND_HOME);
+		response.sendRedirect(Constants.COMMAND_HOME);
 	}
 
 }

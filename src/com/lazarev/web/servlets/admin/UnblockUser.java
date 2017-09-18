@@ -28,7 +28,6 @@ public class UnblockUser extends HttpServlet {
 			new UserDAO().unBlockUser(userId);
 			LOGGER.trace("admin want bant ban user" + userId);
 		}
-//		response.sendRedirect("/vstup/bannedUser");
 	}
 
 }

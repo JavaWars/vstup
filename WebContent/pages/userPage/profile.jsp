@@ -1,4 +1,3 @@
-<%@ page isErrorPage="true"%>
 <%@ page import="java.io.PrintWriter"%>
 <%@ include file="/pages/jspf/directive/page.jspf"%>
 
@@ -15,8 +14,33 @@
 
 	<div class="jumbotron container theme-showcasejumbotron" role="main">
 		<div class="jumbotron row">
-			PRO FILE
-			<%@ include file="/pages/jspf/directive/footer.jspf"%>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th><tags:lang text="subject"></tags:lang></th>
+						<th><tags:lang text="markMy"></tags:lang></th>
+						<!-- <th>operation</th> -->
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${subjects}" var="subject">
+						<tr>
+							<th scope="row"></th>
+							<td>${subject.name}</td>
+							<td>${subject.mark}</td>
+							<%-- <td><c:choose>
+									<c:when test="${ROLE=='USER'}">
+										<button type="button" class="btn btn-primary "
+											onclick="go('subjectEdit',${subject.id})">edit</button>
+									</c:when>
+								</c:choose></td> --%>
+						</tr>
+					</c:forEach>
+
+				</tbody>
+			</table>
+
 		</div>
 	</div>
 

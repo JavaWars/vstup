@@ -38,7 +38,7 @@ public class DepartmentSorter {
 				Collections.sort(departments, new Comparator<Department>() {
 					@Override
 					public int compare(Department o1, Department o2) {
-						return o2.getPlaceDov() - o1.getPlaceDov();
+						return o2.getPlaceGov() - o1.getPlaceGov();
 					}
 				});
 				break;
@@ -46,7 +46,7 @@ public class DepartmentSorter {
 				Collections.sort(departments, new Comparator<Department>() {
 					@Override
 					public int compare(Department o1, Department o2) {
-						return o1.getPlaceDov() - o2.getPlaceDov();
+						return o1.getPlaceGov() - o2.getPlaceGov();
 					}
 				});
 				break;

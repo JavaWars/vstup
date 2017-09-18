@@ -20,7 +20,7 @@ public class Logout extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.debug("User create LOGOUT action");
 		request.getSession().invalidate();
-		response.sendRedirect(request.getContextPath()+Constants.PAGE_LOGIN);
+		response.sendRedirect(Constants.COMMAND_HOME);
 	}
 
 }

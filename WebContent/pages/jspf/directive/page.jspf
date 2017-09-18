@@ -6,13 +6,15 @@ Encoding of this JSP page: UTF-8
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <jsp:directive.page contentType="text/html; charset=UTF-8" />
-
 <%--=========================================================================== 
 JSTL core tag library.
 ===========================================================================--%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
 <%--=========================================================================== 
 JSTL functions tag library.
 ===========================================================================--%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%--=========================================================================== 
+My tag for i18n.
+===========================================================================--%>
+<%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>

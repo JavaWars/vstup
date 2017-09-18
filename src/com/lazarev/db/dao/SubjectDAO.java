@@ -30,6 +30,8 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 	private static final String SELECT_SUBJECT_FOR_DEPARTMET = "SELECT `subject`.id,need_subject_for_department.scale, `subject`.`name` from `subject`, need_subject_for_department where need_subject_for_department.id_sub=`subject`.id and need_subject_for_department.id_dep=?";
 
+	private static final String SELECT_ALL_SUBJECT_BY_NAME = "SELECT `subject`.`name` FROM `subject` where `subject`.`name` like ?";
+
 	@Override
 	public Subject get(Integer key) {
 		Subject subject = new Subject();
@@ -99,7 +101,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 		return result;
 	}
 
-	// name in subject (id will be set from db if exist)
+	//(id will be set from db if exist)
 	public void getByName(Subject subject) {
 		LOGGER.debug("fin subject by name");
 		String name = subject.getName();
@@ -231,6 +233,34 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 		return subjects;
 
 	}
+	
+	public List<String> getAllSubjectWithName(String subjectName) {
+		LOGGER.debug("SubjectDAO#getAllSubjectWithName()");
+		List<String> result = new LinkedList<>();
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = getPreparedStatement(null, SELECT_ALL_SUBJECT_BY_NAME);
+			String val="%"+subjectName+"%";
+			LOGGER.info(val);
+			preparedStatement.setString(1, val);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				result.add(resultSet.getString("name"));
+			}
+
+		} catch (SQLException e) {
+			LOGGER.error("can not get Subject by name",e);
+		} finally {
+			close(preparedStatement);
+			close(resultSet);
+			close(connection);
+		}
+		return result;
+	}
+	
 	///////////////////////////////////////////////
 	// prepare
 
