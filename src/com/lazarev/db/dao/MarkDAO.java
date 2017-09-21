@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import com.lazarev.db.entity.Department;
 import com.lazarev.db.entity.StudentMark;
 import com.lazarev.db.entity.Subject;
+import com.lazarev.exception.MyAppException;
 import com.mysql.jdbc.Connection;
 
 public class MarkDAO extends DAO<Subject, Integer> {
@@ -31,9 +32,9 @@ public class MarkDAO extends DAO<Subject, Integer> {
 	}
 
 	public List<StudentMark> getAll(int userId) {
-		List<StudentMark> result=new LinkedList<>();
-		LOGGER.debug("get user marks for user id="+userId);
-		
+		List<StudentMark> result = new LinkedList<>();
+		LOGGER.debug("get user marks for user id=" + userId);
+
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -47,6 +48,7 @@ public class MarkDAO extends DAO<Subject, Integer> {
 
 		} catch (SQLException e) {
 			LOGGER.error("can not get department", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -84,12 +86,13 @@ public class MarkDAO extends DAO<Subject, Integer> {
 				result = false;
 			}
 		} catch (SQLException e) {
-			LOGGER.error("can not enter user for this university department"+idUser+""+idDepartment,e);
+			LOGGER.error("can not enter user for this university department" + idUser + "" + idDepartment, e);
 			result = false;
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 		}
-		LOGGER.debug("insertUserDepartment result"+result);
+		LOGGER.debug("insertUserDepartment result" + result);
 		return result;
 	}
 
@@ -106,12 +109,13 @@ public class MarkDAO extends DAO<Subject, Integer> {
 				result = false;
 			}
 		} catch (SQLException e) {
-			LOGGER.error("can not enter user mark for this university department",e);
+			LOGGER.error("can not enter user mark for this university department", e);
 			result = false;
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 		}
-		LOGGER.debug("inserting User Mark result="+result);
+		LOGGER.debug("inserting User Mark result=" + result);
 		return result;
 	}
 
@@ -123,11 +127,11 @@ public class MarkDAO extends DAO<Subject, Integer> {
 		try {
 			connection.setAutoCommit(false);
 			connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-			
-			UserDAO userDB=new UserDAO();
+
+			UserDAO userDB = new UserDAO();
 			userDB.setConnection(connection);
 			int userId = userDB.getIdByEmail(userLigin);
-			
+
 			if (insertUserDepartment(userId, department.getId())) {
 				for (int i = 0; i < marks.size(); i++) {
 					if (!insertUserMark(userId, marks.get(i))) {
@@ -137,7 +141,7 @@ public class MarkDAO extends DAO<Subject, Integer> {
 			} else {
 				ok = false;
 			}
-			
+
 			if (!ok) {
 				LOGGER.error("transaction fail");
 				rollback(connection);
@@ -145,24 +149,27 @@ public class MarkDAO extends DAO<Subject, Integer> {
 				LOGGER.error("transaction ok");
 				connection.commit();
 			}
-			
+
 		} catch (SQLException e) {
 			rollback(connection);
 			LOGGER.error("can not insert new department", e);
+			throw new MyAppException("something going wrong with db", e);
+
 		} finally {
 			close(connection);
 		}
 	}
-	
+
 	private StudentMark prepareUserMark(ResultSet resultSet) {
-		StudentMark sm=null;
+		StudentMark sm = null;
 		try {
-			sm=new StudentMark();
+			sm = new StudentMark();
 			sm.setName(resultSet.getString("name"));
 			sm.setMark(resultSet.getDouble("mark"));
 		} catch (SQLException e) {
-			LOGGER.debug("can not prepare user mark",e);
-			sm=null;
+			LOGGER.debug("can not prepare user mark", e);
+			sm = null;
+			throw new MyAppException("something going wrong with db", e);
 		}
 		return sm;
 	}

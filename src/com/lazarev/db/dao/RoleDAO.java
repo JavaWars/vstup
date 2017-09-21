@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.Role;
+import com.lazarev.exception.MyAppException;
 
 public class RoleDAO extends DAO<Role, Integer> {
 
@@ -39,6 +40,7 @@ public class RoleDAO extends DAO<Role, Integer> {
 		} catch (SQLException e) {
 
 			logger.error("cant get role using QUERY: " + GET_ROLE_BY_USER_ID, e);
+			throw new MyAppException("something going wrong with db", e);
 
 		} finally {
 			close(prepared);
@@ -87,6 +89,7 @@ public class RoleDAO extends DAO<Role, Integer> {
 		} catch (SQLException e) {
 
 			logger.error("cant get role using QUERY: " + GET_ROLE_BY_USER_ID, e);
+			throw new MyAppException("something going wrong with db", e);
 
 		} finally {
 			close(prepared);
@@ -113,6 +116,7 @@ public class RoleDAO extends DAO<Role, Integer> {
 		} catch (SQLException e) {
 
 			logger.error("cant get role using QUERY: " + GET_ROLE_ID_BY_ROLE_NAME, e);
+			throw new MyAppException("something going wrong with db", e);
 
 		} finally {
 			close(prepared);
@@ -132,6 +136,7 @@ public class RoleDAO extends DAO<Role, Integer> {
 			role = Role.valueOf(result.getString(1));
 		} catch (SQLException e) {
 			logger.error("cant prepare Role", e);
+			throw new MyAppException("something going wrong with db", e);
 		}
 
 		return role;

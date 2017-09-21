@@ -47,7 +47,7 @@ public class JsonExtracter {
 		for (int i = 0; i < arr.length(); i++) {
 			StudentMark studentMark=new StudentMark();
 			studentMark.setId(arr.getJSONObject(i).getJSONObject("mark").getInt("id"));
-			studentMark.setMark(arr.getJSONObject(i).getJSONObject("mark").getInt("userMark"));
+			studentMark.setMark(arr.getJSONObject(i).getJSONObject("mark").getDouble("userMark"));
 			marks.add(studentMark);
 		}
 	}

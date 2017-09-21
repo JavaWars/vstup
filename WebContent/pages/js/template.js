@@ -9,8 +9,10 @@ function passwordValidation(field, validationResult) {
 	if ((field.value == "") || (field.value.length > 30)
 			|| ((field.value.length < 6))) {
 		document.getElementById(validationResult).style.color = "red";
+		console.log("not valid"+field);
 	} else {
 		document.getElementById(validationResult).style.color = "rgb(100,100,200)";
+		console.log("valid"+field);
 		return true;
 	}
 	return false;
@@ -21,8 +23,10 @@ function checkEmail(field, validationResult) {
 	if (!validateEmail(field.value) || (field.value == "")
 			|| (field.value.length > 30)) {
 		document.getElementById(validationResult).style.color = "red";
+		console.log("not valid"+field);
 	} else {
 		document.getElementById(validationResult).style.color = "rgb(100,100,200)";
+		console.log("valid"+field);
 		return true;
 	}
 	return false;
@@ -32,8 +36,10 @@ function checkTextField(field, validationResult) {
 	console.log("checking fild");
 	if ((field.value == "") || (field.value.length > 30)) {
 		document.getElementById(validationResult).style.color = "red";
+		console.log("not valid"+field);
 	} else {
 		document.getElementById(validationResult).style.color = "rgb(100,100,200)";
+		console.log("valid"+field);
 		return true;
 	}
 	return false;

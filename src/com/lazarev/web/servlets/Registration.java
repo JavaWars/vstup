@@ -15,6 +15,7 @@ import com.lazarev.db.dao.CityDAO;
 import com.lazarev.db.dao.RoleDAO;
 import com.lazarev.db.dao.UserDAO;
 import com.lazarev.db.entity.User;
+import com.lazarev.exception.MyAppException;
 import com.lazarev.util.EmailService;
 import com.lazarev.web.Constants;
 
@@ -28,15 +29,15 @@ public class Registration extends HttpServlet {
 		logger.debug("registration doGet");
 
 		Object role = request.getSession().getAttribute("ROLE");
-		logger.debug("role= "+role);
+		logger.debug("role= " + role);
 		if (role == null) {
 
 			request.getRequestDispatcher(Constants.PAGE_REGISTRATION).forward(request, response);
-		
+
 		} else {
-			
+
 			request.setAttribute("errorMessage", "You need logout");
-			request.getRequestDispatcher( Constants.PAGE_ERROR).forward(request, response);
+			request.getRequestDispatcher(Constants.PAGE_ERROR).forward(request, response);
 		}
 	}
 
@@ -54,16 +55,23 @@ public class Registration extends HttpServlet {
 		newUser.setRoleId(new RoleDAO().getRoleIdByRoleName(role.getName()));
 		newUser.setCityId(new CityDAO().get(request.getParameter("city")));
 		logger.trace("newUser" + newUser);
-		
-		new UserDAO().insert(newUser);
-		
-		request.getSession().setAttribute("ROLE", role.getName());
-		request.getSession().setAttribute("EMAIL", newUser.getEmail());
-		request.getSession().setAttribute("NAME",newUser.getName());
-		
-		EmailService.getInstance().sendMessage(newUser.getEmail(), "Welcome in vstup system", "welcome my dear user description");
-		
-		response.sendRedirect(Constants.COMMAND_HOME);
+
+		UserDAO userDb = new UserDAO();
+		if (userDb.getIdByEmail(newUser.getEmail()) == 0) {
+			userDb.insert(newUser);
+
+			request.getSession().setAttribute("ROLE", role.getName());
+			request.getSession().setAttribute("EMAIL", newUser.getEmail());
+			request.getSession().setAttribute("NAME", newUser.getName());
+
+			EmailService.getInstance().sendMessage(newUser.getEmail(), "Welcome in vstup system",
+					"welcome my dear user description");
+
+			response.sendRedirect(Constants.COMMAND_HOME);
+		} else {
+			request.setAttribute("errorMessage", "this email already used ");
+			request.getRequestDispatcher(Constants.PAGE_ERROR).forward(request, response);
+		}
 	}
 
 }

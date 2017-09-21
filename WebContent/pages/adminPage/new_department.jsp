@@ -37,6 +37,9 @@
 					if (xhr.readyState === 4 && xhr.status === 200) {
 						window.location.href="departments";
 					}
+					if (xhr.readyState === 4 && this.status == 500) {
+						alert("oops, check input data");
+					}
 				};
 				var myJsonString = JSON.stringify(list);
 				var data = {
@@ -128,6 +131,9 @@
 				if (xhr.readyState === 4 && xhr.status === 200) {
 					console.log("ok");
 					window.location.href = "departments";
+				}
+				if (xhr.readyState === 4 && this.status == 500) {
+					alert("oops, check input data");
 				}
 			};
 			var myJsonString = JSON.stringify(list);
@@ -237,15 +243,15 @@ $(function() {
 					<p id="placesTotalValidation">
 						<tags:lang text="placesTot"></tags:lang>
 					</p>
-					<input type="number" min="0" max="1000" id="placesTotal"
-						name="placesTotal"
+					<input type="number" min="0" max="999" maxlength="3"
+						id="placesTotal" name="placesTotal"
 						onblur="checkTextField(this,'placesTotalValidation');" /></input>
 				</div>
 				<div>
 					<p id="placesGovValidation">
 						<tags:lang text="placesGov"></tags:lang>
 					</p>
-					<input type="number" min="0" max="1000" id="placesGov"
+					<input type="number" min="0" max="999" maxlength="3" id="placesGov"
 						name="placesGov"
 						onblur="checkTextField(this,'placesGovValidation');" /></input>
 				</div>
@@ -277,7 +283,8 @@ $(function() {
 									<input id="markName" type="text" name="markName">
 								</div>
 							</td>
-							<td><input type="number" id="markScale" /></td>
+							<td><input type="number" id="markScale" min="0" max="999"
+								maxlength="3" /></td>
 							<td>
 								<!-- 
 					admin want add this mark to table

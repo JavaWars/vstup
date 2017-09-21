@@ -5,7 +5,21 @@
 
 <c:set var="title" value="Users" scope="page" />
 <%@ include file="/pages/jspf/directive/head.jspf"%>
+<script type="text/javascript">
+	$(document).ready(function () {
+		checking();
+	});
+	
+	function checking() {
 
+		$('input:file').filter(function() {
+			console.log("checking!");
+			$('#sendFile').prop('disabled', (this.files.length == 0))
+
+		});
+	}
+	
+</script>
 <body>
 
 	<%-- HEADER --%>
@@ -29,12 +43,6 @@
 							<th scope="row"></th>
 							<td>${subject.name}</td>
 							<td>${subject.mark}</td>
-							<%-- <td><c:choose>
-									<c:when test="${ROLE=='USER'}">
-										<button type="button" class="btn btn-primary "
-											onclick="go('subjectEdit',${subject.id})">edit</button>
-									</c:when>
-								</c:choose></td> --%>
 						</tr>
 					</c:forEach>
 
@@ -42,8 +50,22 @@
 			</table>
 
 		</div>
-	</div>
 
+		<div>
+			<tags:lang text="selectFile"></tags:lang>
+		</div>
+		<form action="userImgCatcher" method="post"
+			enctype="multipart/form-data">
+			<input type="file" name="file" size="50" onchange="checking()"/> <br /> <input
+				type="submit" id="sendFile"
+				value='<tags:lang text="uploadFile"></tags:lang>' />
+		</form>
+
+		<c:if test="${file!=null}">
+			<img alt="img" src="${file}" height="300" width="300"
+				accept="image/x-png,image/gif,image/jpeg" />
+		</c:if>
+	</div>
 
 
 	<%@ include file="/pages/jspf/directive/footer.jspf"%>

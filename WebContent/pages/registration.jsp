@@ -20,12 +20,11 @@
 
 	function continueOrNot() {
 		if ((validateEmail(document.getElementById('email').value))
-				&&(checkTextField(document.getElementById('email')),'emailValidation')
-				&&(passwordValidation(document.getElementById('password')),'passwordValidation')
-				&&(checkTextField(document.getElementById('name')),'nameValidation')
-				&&(checkTextField(document.getElementById('secondName')),'secondNameValidation'))
-						{
-
+				&&(checkTextField(document.getElementById('email'),'emailValidation'))
+				&&(checkTextField(document.getElementById('name'),'nameValidation'))
+				&&(checkTextField(document.getElementById('secondName'),'secondNameValidation'))
+				&&(passwordValidation(document.getElementById('password'),'passwordValidation')))
+		{
 			console.log("data form is valid ");
 			return true;
 		} else {
@@ -74,10 +73,10 @@
 						yourself.</legend>
 
 					<form action="registration" method="post"
-						onsubmit="return continueOrNot()">
+						onsubmit="return continueOrNot()" >
 						<div>
 							<p id="nameValidation">input your name</p>
-							<input type="text" name="name"
+							<input type="text" name="name" id ="name"
 								onblur="checkTextField(this,'nameValidation');" />
 						</div>
 						<div>
@@ -95,7 +94,7 @@
 						<div>
 							<p id="passwordValidation">password</p>
 
-							<input type="password" name="password" id=""
+							<input type="password" name="password" id="password"
 								onblur="passwordValidation(this,'passwordValidation');" />
 						</div>
 						<div>

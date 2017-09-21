@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.lazarev.util.PdfCreator;
+import com.lazarev.util.PdfCreator;
 import com.lazarev.web.Constants;
 
 @WebServlet("/pdf")
@@ -23,29 +25,40 @@ public class GetPdf extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		LOGGER.debug("GetPdf#doGet()");
-		// this.getServletContext().getRealPath(File.separator)
-		String path = Constants.PDF_HOME + "d.pdf";
-		LOGGER.trace(path);
 
-		int BUFF_SIZE = 1024;
-		byte[] buffer = new byte[BUFF_SIZE];
+		String depId = request.getParameter("id");
+		if (depId != null) {
+			int id = Integer.parseInt(depId);
+			String path = Constants.PDF_HOME + id + ".pdf";
+			LOGGER.trace("returned pdf from path: " + path);
+
+			//
+			String xslPath = getServletContext().getRealPath(Constants.PDF_TEMPLATE_DIR);
+			LOGGER.info("servlet context path" + xslPath);
+			PdfCreator.create(xslPath, id);
+
+			returnPdf(response, path);
+		}
+	}
+
+	private void returnPdf(HttpServletResponse response, String path) throws IOException {
+
+		File pdfFile = new File(path);
+
+		// for downloading
+		// response.addHeader("Content-Disposition", "attachment;
+		// filename=abc");
+
 		response.setContentType("application/pdf");
-		response.setHeader("Content-Type", "application/pdf");
-		File filePDF = new File(path);
-		FileInputStream fis = new FileInputStream(filePDF);
-		OutputStream os = response.getOutputStream();
-		try {
-			response.setContentLength((int) filePDF.length());
-			int byteRead = 0;
-			while ((byteRead = fis.read()) != -1) {
-				os.write(byteRead);
-			}
-			os.flush();
-		} catch (Exception excp) {
-			excp.printStackTrace();
-		} finally {
-			os.close();
-			fis.close();
+
+		response.setContentLength((int) pdfFile.length());
+
+		FileInputStream fileInputStream = new FileInputStream(pdfFile);
+		OutputStream responseOutputStream = response.getOutputStream();
+
+		int bytes;
+		while ((bytes = fileInputStream.read()) != -1) {
+			responseOutputStream.write(bytes);
 		}
 
 	}

@@ -17,6 +17,9 @@
 				if (this.readyState == 4 && this.status == 200) {
 					location.reload();
 				}
+				if (xhr.readyState === 4 && this.status == 500) {
+					alert("oops");
+				}
 			};
 			xhttp.open("POST", url, true);
 			xhttp.setRequestHeader("Content-type",

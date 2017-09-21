@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.lazarev.db.entity.DepartmentSubject;
 import com.lazarev.db.entity.Subject;
+import com.lazarev.exception.MyAppException;
 import com.lazarev.exception.MyDbException;
 
 public class SubjectDAO extends DAO<Subject, Integer> {
@@ -49,6 +50,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 		} catch (SQLException e) {
 			LOGGER.error("can't get Subject by id", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -93,6 +95,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 			} catch (SQLException e) {
 				LOGGER.error("can't insert Subject", e);
+				throw new MyAppException("something going wrong with db", e);
 			} finally {
 				close(preparedStatement);
 				close(resultSet);
@@ -101,7 +104,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 		return result;
 	}
 
-	//(id will be set from db if exist)
+	// (id will be set from db if exist)
 	public void getByName(Subject subject) {
 		LOGGER.debug("fin subject by name");
 		String name = subject.getName();
@@ -119,6 +122,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 		} catch (SQLException e) {
 			LOGGER.error("can't get Subject by name", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -146,6 +150,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 		} catch (SQLException e) {
 			LOGGER.error("can't insert Subject for department", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 		}
@@ -171,6 +176,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 		} catch (SQLException e) {
 			LOGGER.error("cant delete marks for deparment", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 		}
@@ -204,10 +210,10 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 		setConnection(connection);
 		deleteMarksFromDepartment(idDepartment);
 
-		insertDepartmentSubject(connection,idDepartment,subjects);
+		insertDepartmentSubject(connection, idDepartment, subjects);
 
 	}
-	
+
 	public List<DepartmentSubject> getAllSubjectsForDepartmentId(int departmentId) {
 		List<DepartmentSubject> subjects = new LinkedList<>();
 		prepareConnectionToWork(connection);
@@ -224,6 +230,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 		} catch (SQLException e) {
 			LOGGER.error("can't get Subject by id", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -233,7 +240,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 		return subjects;
 
 	}
-	
+
 	public List<String> getAllSubjectWithName(String subjectName) {
 		LOGGER.debug("SubjectDAO#getAllSubjectWithName()");
 		List<String> result = new LinkedList<>();
@@ -242,7 +249,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 		ResultSet resultSet = null;
 		try {
 			preparedStatement = getPreparedStatement(null, SELECT_ALL_SUBJECT_BY_NAME);
-			String val="%"+subjectName+"%";
+			String val = "%" + subjectName + "%";
 			LOGGER.info(val);
 			preparedStatement.setString(1, val);
 			resultSet = preparedStatement.executeQuery();
@@ -252,7 +259,8 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 			}
 
 		} catch (SQLException e) {
-			LOGGER.error("can not get Subject by name",e);
+			LOGGER.error("can not get Subject by name", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -260,7 +268,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 		}
 		return result;
 	}
-	
+
 	///////////////////////////////////////////////
 	// prepare
 
@@ -272,11 +280,12 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 			subject.setName(resultSet.getString("name"));
 		} catch (SQLException e) {
 			LOGGER.error("can not prepare subject", e);
+			throw new MyAppException("something going wrong with db", e);
 		}
 
 		return subject;
 	}
-	
+
 	private DepartmentSubject prepareDepartmentSubject(ResultSet resultSet) {
 		DepartmentSubject subject = new DepartmentSubject();
 
@@ -286,6 +295,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 			subject.setScale(resultSet.getDouble("scale"));
 		} catch (SQLException e) {
 			LOGGER.error("can not prepare subject", e);
+			throw new MyAppException("something going wrong with db", e);
 		}
 
 		return subject;

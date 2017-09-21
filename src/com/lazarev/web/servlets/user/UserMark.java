@@ -19,32 +19,36 @@ import com.lazarev.db.entity.StudentMark;
 import com.lazarev.web.Constants;
 import com.lazarev.web.json.JsonExtracter;
 import com.lazarev.web.servlets.helper.Helper;
+import com.lazarev.web.servlets.helper.ImgConverter;
 
 @WebServlet("/userMark")
 public class UserMark extends HttpServlet {
-	
-	private static final Logger LOGGER=Logger.getLogger(UserMark.class);
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	private static final Logger LOGGER = Logger.getLogger(UserMark.class);
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		LOGGER.debug("UserMark#doGet()");
-		
-		String email=(String) request.getSession().getAttribute("EMAIL");
-		if (email!=null){
-			int id=new UserDAO().getIdByEmail(email);
-			List<StudentMark> subjects=new MarkDAO().getAll(id);
+
+		String email = (String) request.getSession().getAttribute("EMAIL");
+		if (email != null) {
+			int id = new UserDAO().getIdByEmail(email);
+			List<StudentMark> subjects = new MarkDAO().getAll(id);
 			request.setAttribute("subjects", subjects);
+			request.setAttribute("file", ImgConverter.fileNameTo64BaseData(String.valueOf(id)));
 			request.getRequestDispatcher(Constants.PAGE_USER_PROFILE).forward(request, response);
 		}
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		LOGGER.debug("UserMark#doPost()");
-		
+
 		Department department = new Department();
 		List<StudentMark> marks = new LinkedList<>();
 		JsonExtracter.extractUserMarks(Helper.getJsonQuery(request), department, marks);
-		String userLogin=(String) request.getSession().getAttribute("EMAIL");
-		new MarkDAO().insertUserMarks(department, marks,userLogin);
+		String userLogin = (String) request.getSession().getAttribute("EMAIL");
+		new MarkDAO().insertUserMarks(department, marks, userLogin);
 	}
 
 }

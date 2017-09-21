@@ -11,6 +11,8 @@ import org.apache.log4j.Logger;
 
 import com.lazarev.db.entity.extra.UserPosition;
 import com.lazarev.db.entity.extra.UserTotalMark;
+import com.lazarev.exception.MyAppException;
+import com.lazarev.web.servlets.helper.ImgConverter;
 
 public class UserPositionDAO extends DAO<UserPosition, Integer> {
 
@@ -35,23 +37,22 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 		List<UserTotalMark> result = new LinkedList<>();
 
 		prepareConnectionToWork(connection);
-		PreparedStatement preparedStatement=getPreparedStatement(connection, CALL_SELECT_DEPARTMENT_RATING_BY_DEP);
-		ResultSet resultSet=null;
+		PreparedStatement preparedStatement = getPreparedStatement(connection, CALL_SELECT_DEPARTMENT_RATING_BY_DEP);
+		ResultSet resultSet = null;
 		try {
 			preparedStatement.setInt(1, departmentId);
-			
-			resultSet=preparedStatement.executeQuery();
-			
-			while(resultSet.next()){
-				UserTotalMark mark=new UserTotalMark();
-				mark.setName(resultSet.getString("name"));
-				mark.setSecondName(resultSet.getString("secondName"));
-				mark.setMark(resultSet.getDouble("mark"));
-				result.add(mark);
+
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				UserTotalMark userTotalMark = new UserTotalMark();
+				prepareUserTotalMark(resultSet, userTotalMark);
+				result.add(userTotalMark);
 			}
-			
+
 		} catch (SQLException e) {
 			LOGGER.error("can not insert new department", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(connection);
 		}
@@ -78,6 +79,7 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 		} catch (SQLException e) {
 			rollback(connection);
 			LOGGER.error("can not insert new department", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(connection);
 		}
@@ -118,6 +120,7 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 
 		} catch (SQLException e) {
 			LOGGER.error("can not get all departmens");
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -129,18 +132,19 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 	private void setTotalPlaces(UserPosition userPosition) {
 		// getId==department
 		LOGGER.debug("set total places for dep" + userPosition.getId());
-		
+
 		PreparedStatement preparedStatement = getPreparedStatement(connection, SELECT_TOTAL_PLACES_IN_DEPARTMENT);
-		ResultSet resultSet=null;
+		ResultSet resultSet = null;
 		try {
 			preparedStatement.setInt(1, userPosition.getId());
-			
-			resultSet=preparedStatement.executeQuery();
+
+			resultSet = preparedStatement.executeQuery();
 			if (resultSet.next()) {
 				userPosition.setTotalPeople(resultSet.getInt(1));
 			}
 		} catch (SQLException e) {
-			LOGGER.error("can not get count of users for department"+userPosition.getId(),e);
+			LOGGER.error("can not get count of users for department" + userPosition.getId(), e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(resultSet);
 			close(preparedStatement);
@@ -151,18 +155,19 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 	private void setMyPosition(UserPosition userPosition, Integer userId) {
 		LOGGER.debug("set my position for user" + userId);
 		PreparedStatement preparedStatement = getPreparedStatement(connection, CALL_SELECT_MY_POSITION_IN_DEPARTMENT);
-		ResultSet resultSet=null;
+		ResultSet resultSet = null;
 		try {
-			preparedStatement.setInt(1, userPosition.getId());//department id
+			preparedStatement.setInt(1, userPosition.getId());// department id
 			preparedStatement.setInt(2, userId);
 
 			preparedStatement.executeUpdate();
-			resultSet=preparedStatement.getResultSet();
+			resultSet = preparedStatement.getResultSet();
 			while (resultSet.next()) {
 				userPosition.setMyPlace(resultSet.getInt(1));
 			}
 		} catch (SQLException e) {
-			LOGGER.error("can not position for user"+userId,e);
+			LOGGER.error("can not position for user" + userId, e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(resultSet);
 			close(preparedStatement);
@@ -181,8 +186,17 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 			position.setTotaPlace(resultSet.getInt("place_total"));
 		} catch (SQLException e) {
 			LOGGER.error("CAN NOT PREPARE user Position (information about department)", e);
+			throw new MyAppException("something going wrong with db", e);
 		}
 
 		return position;
+	}
+
+	private void prepareUserTotalMark(ResultSet resultSet, UserTotalMark userTotalMark) throws SQLException {
+		userTotalMark.setId(resultSet.getInt("id"));// userId
+		userTotalMark.setName(resultSet.getString("name"));
+		userTotalMark.setSecondName(resultSet.getString("secondName"));
+		userTotalMark.setMark(resultSet.getDouble("mark"));
+		userTotalMark.setFile(ImgConverter.fileNameTo64BaseData(String.valueOf(userTotalMark.getId())));
 	}
 }

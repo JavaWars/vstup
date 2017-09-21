@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 
 import com.lazarev.db.entity.Department;
 import com.lazarev.db.entity.DepartmentSubject;
+import com.lazarev.exception.MyAppException;
 import com.lazarev.exception.MyDbException;
-import com.lazarev.web.servlets.admin.department;
 import com.mysql.jdbc.Connection;
 
 public class DepartmentDAO extends DAO<Department, Integer> {
@@ -39,9 +39,14 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			if (resultSet.next()) {
 				setDepartment(resultSet, result);
 			}
+			else{
+				throw new MyAppException("can't find department");
+			}
 
 		} catch (SQLException e) {
 			LOGGER.error("can not get department", e);
+			throw new MyAppException("something going wrong with db", e);
+
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -67,6 +72,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 
 		} catch (SQLException e) {
 			LOGGER.error("can not get all departmens");
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -75,8 +81,6 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 		return result;
 	}
 
-	
-	
 	@Override
 	public boolean delete(Integer id) {
 		boolean result = false;
@@ -91,6 +95,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			}
 		} catch (SQLException e) {
 			LOGGER.debug("can not insert department", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(connection);
@@ -117,6 +122,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			}
 		} catch (SQLException e) {
 			LOGGER.debug("can not update department", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 		}
@@ -147,6 +153,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			}
 		} catch (SQLException e) {
 			LOGGER.debug("can not insert department", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(resultSet);
 			close(preparedStatement);
@@ -174,6 +181,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 					} catch (MyDbException e) {
 						LOGGER.error("can not complite transaction", e);
 						rollback(connection);
+						throw new MyAppException("something going wrong with db", e);
 					}
 				}
 				connection.commit();
@@ -181,11 +189,14 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			} catch (SQLException e) {
 				rollback(connection);
 				LOGGER.error("can not insert new department", e);
+				throw new MyAppException("something going wrong with db", e);
 			} finally {
 				close(connection);
 			}
 		} else {
 			LOGGER.error("incorrect input data");
+			throw new MyAppException("incorrect input data");
+
 		}
 	}
 
@@ -214,6 +225,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			} catch (SQLException e) {
 				rollback(connection);
 				LOGGER.error("can not insert new department", e);
+				throw new MyAppException("something going wrong with db", e);
 			} finally {
 				close(connection);
 			}
@@ -231,7 +243,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 		ResultSet resultSet = null;
 		try {
 			preparedStatement = getPreparedStatement(null, SELECT_ALL_DEPARTMENT_WITH_NAME);
-			String val="%"+departmantName+"%";
+			String val = "%" + departmantName + "%";
 			LOGGER.info(val);
 			preparedStatement.setString(1, val);
 			resultSet = preparedStatement.executeQuery();
@@ -241,7 +253,8 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			}
 
 		} catch (SQLException e) {
-			LOGGER.error("can not get Departments  with name",e);
+			LOGGER.error("can not get Departments  with name", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -263,6 +276,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			department.setTotaPlace(resultSet.getInt("place_total"));
 		} catch (SQLException e) {
 			LOGGER.error("CAN NOT PREPARE Department", e);
+			throw new MyAppException("something going wrong with db", e);
 		}
 
 		return department;
@@ -277,6 +291,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 			department.setTotaPlace(resultSet.getInt("place_total"));
 		} catch (SQLException e) {
 			LOGGER.error("CAN NOT PREPARE Department", e);
+			throw new MyAppException("something going wrong with db", e);
 		}
 	}
 

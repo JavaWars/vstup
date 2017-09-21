@@ -18,6 +18,10 @@
 			if (this.readyState == 4 && this.status == 200) {
 				window.location.href="departments";
 			}
+			
+			if (this.readyState == 4 && this.status == 500) {
+				alert("oops, server error");
+			}
 			};
 			xhttp.open("POST", path, true);
 			xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");

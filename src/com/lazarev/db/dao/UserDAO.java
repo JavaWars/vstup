@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.entity.User;
+import com.lazarev.exception.MyAppException;
 
 public class UserDAO extends DAO<User, Integer> {
 
@@ -58,6 +59,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 		} catch (SQLException e) {
 			logger.error("can't get all users", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -99,6 +101,7 @@ public class UserDAO extends DAO<User, Integer> {
 			inserted = true;
 		} catch (SQLException e) {
 			logger.error("cannot insert new user", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(prepared);
 			close(connection);
@@ -109,11 +112,11 @@ public class UserDAO extends DAO<User, Integer> {
 	///////////////////////////////////////
 	// other operation
 
-	public int getIdByEmail(String login){
-		logger.debug("select id by email"+login);
+	public int getIdByEmail(String login) {
+		logger.debug("select id by email" + login);
 
-		int result=0;
-		
+		int result = 0;
+
 		prepareConnectionToWork(connection);
 		PreparedStatement prepared = getPreparedStatement(connection, SELECT_USER_BY_EMAIL);
 		ResultSet set = null;
@@ -125,19 +128,20 @@ public class UserDAO extends DAO<User, Integer> {
 			set = prepared.executeQuery();
 
 			if (set.next()) {
-				result=set.getInt("id");
+				result = set.getInt("id");
 				logger.info(result);
 			}
 
 		} catch (SQLException e) {
 			logger.error("can't get result from table user by query " + SELECT_USER_BY_EMAIL, e);
+			throw new MyAppException("Something going wrong");
 		} finally {
 			close(prepared);
 			close(set);
 		}
 		return result;
 	}
-	
+
 	public boolean ckeck(User user) {
 
 		logger.debug("checking User");
@@ -160,6 +164,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 		} catch (SQLException e) {
 			logger.error("cant get result from table user by query " + SELECT_USER_BY_LOGIN_AND_PASSWORD, e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(prepared);
 			close(set);
@@ -184,6 +189,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 		} catch (SQLException e) {
 			logger.error("can't get all banned", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -209,6 +215,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 		} catch (SQLException e) {
 			logger.error("can't ban user", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(connection);
@@ -232,6 +239,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 		} catch (SQLException e) {
 			logger.error("cant unblock user", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(connection);
@@ -254,6 +262,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 		} catch (SQLException e) {
 			logger.error("can't get all users", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -278,6 +287,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 		} catch (SQLException e) {
 			logger.error("can't check is user blocked", e);
+			throw new MyAppException("something going wrong with db", e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
@@ -304,6 +314,7 @@ public class UserDAO extends DAO<User, Integer> {
 			user.setRoleId(resultSet.getInt("id_role"));
 		} catch (SQLException e) {
 			logger.error("can't prepare user", e);
+			throw new MyAppException("something going wrong with db", e);
 		}
 
 		return user;

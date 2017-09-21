@@ -27,6 +27,9 @@
 							<th><tags:lang text="userName"></tags:lang></th>
 							<th><tags:lang text="user2Name"></tags:lang></th>
 							<th><tags:lang text="ball"></tags:lang></th>
+							<c:if test="${ROLE=='ADMIN'}">
+								<th><tags:lang text="dockScreen"></tags:lang></th>
+							</c:if>
 						</tr>
 					</thead>
 					<tbody>
@@ -36,17 +39,23 @@
 								<td>${position.name}</td>
 								<td>${position.secondName}</td>
 								<td>${position.mark}</td>
+								<c:if test="${ROLE=='ADMIN'}">
+									<td><c:if test="${position.file!=null}">
+											<img alt="img" src="${position.file}" height="100"
+												width="100" />
+										</c:if></td>
+								</c:if>
 							</tr>
 						</c:forEach>
 
 					</tbody>
 				</table>
 			</div>
-			<button type="button" class="btn btn-primary "
-				onclick="pdf(${id})">
-				<tags:lang text="pdf"></tags:lang>
-			</button>
-
+			<c:if test="${ROLE=='ADMIN'}">
+				<button type="button" class="btn btn-primary " onclick="pdf(${id})">
+					<tags:lang text="pdf"></tags:lang>
+				</button>
+			</c:if>
 
 		</div>
 	</div>

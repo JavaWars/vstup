@@ -53,6 +53,9 @@
 				console.log("ok");
 				window.location.href = "home";
 			}
+			if (xhr.readyState === 4 && this.status == 500) {
+				alert("oops, something wrong");
+			}
 		};
 		var myJsonString = JSON.stringify(list);
 		var data = {
@@ -118,7 +121,7 @@
 								<tr>
 									<td></td>
 									<td><p id="${mark.id}Validation">${mark.name}</p></td>
-									<td><input type="number" min="0" class="studentMark"
+									<td><input type="number" min="0" max="100" maxlength="3" class="studentMark"
 										id="${mark.id}" /></td>
 								</tr>
 							</c:forEach>

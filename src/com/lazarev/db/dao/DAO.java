@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.MySqlConnection.MyTomcatPool;
+import com.lazarev.exception.MyAppException;
 
 //E=entity
 //K=key
@@ -43,7 +44,8 @@ public abstract class DAO<E,K> {
 		} catch (SQLException e) {
 			
 			logger.error("cant create statement",e);
-			
+			throw new MyAppException("something EXTREMELY BAD HAPPENED with db", e);
+		
 		}
     	logger.trace("statement created");
     	return statement;
@@ -61,6 +63,7 @@ public abstract class DAO<E,K> {
 		} catch (SQLException e) {
 		
 			logger.error("cant create prepared statement",e);
+			throw new MyAppException("something EXTREMELY BAD HAPPENED with db", e);
 		
 		}
     	logger.trace("PreparedStatement created");
@@ -84,6 +87,7 @@ public abstract class DAO<E,K> {
 			closeRes.close();
 		} catch (Exception e) {
 			logger.error("Cannot close a resource: " + closeRes, e);
+			throw new MyAppException("something EXTREMELY BAD HAPPENED with db", e);
 		}
     }
     
@@ -91,8 +95,9 @@ public abstract class DAO<E,K> {
         if (con != null) {
             try {
                 con.rollback();
-            } catch (SQLException ex) {
-                logger.error("Cannot rollback a resource: " + con, ex);
+            } catch (SQLException e) {
+                logger.error("Cannot rollback a resource: " + con, e);
+    			throw new MyAppException("something EXTREMELY BAD HAPPENED with db", e);
             }
         }
     }

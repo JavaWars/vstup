@@ -1,6 +1,6 @@
 package com.lazarev.exception;
 
-public class MyAppException extends Exception{
+public class MyAppException extends RuntimeException{
 
 	public MyAppException() {
 		super();

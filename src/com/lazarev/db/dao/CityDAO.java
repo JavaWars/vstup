@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.entity.City;
-import com.lazarev.db.entity.Department;
+import com.lazarev.exception.MyAppException;
 import com.mysql.jdbc.Statement;
 
 public class CityDAO extends DAO<City, Integer> {
@@ -62,6 +62,7 @@ public class CityDAO extends DAO<City, Integer> {
 		} catch (SQLException e) {
 
 			LOGGER.error("cant insert city using QUERY: " + INSERT_CITY, e);
+			throw new MyAppException("something going wrong with db",e);
 
 		} finally {
 			close(prepared);
@@ -97,6 +98,7 @@ public class CityDAO extends DAO<City, Integer> {
 		} catch (SQLException e) {
 
 			LOGGER.error("cant getCityIdByName using QUERY: " + GET_CITY_ID_BY_NAME, e);
+			throw new MyAppException("something going wrong with db",e);
 
 		} finally {
 			close(prepared);
@@ -127,6 +129,7 @@ public class CityDAO extends DAO<City, Integer> {
 
 		} catch (SQLException e) {
 			LOGGER.error("can not get Departments  with name",e);
+			throw new MyAppException("something going wrong with db",e);
 		} finally {
 			close(preparedStatement);
 			close(resultSet);
