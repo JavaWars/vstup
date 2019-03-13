@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
+//this is simple db manager for connection without pool. This class not used in project
 public class DbManager {
 	
 	private static String url;

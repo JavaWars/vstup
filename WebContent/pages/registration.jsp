@@ -109,8 +109,8 @@
 							<input type="text" name="cityArea" />
 						</div>
 						<div>
-							<input type="submit" value="create" /> <input type="reset"
-								value="clear" />
+							<input type="submit" value="create" class="btn btn-success" /> <input type="reset"
+								value="clear" class="btn btn-primary" />
 						</div>
 						<p id="validationResult"></p>
 					</form>

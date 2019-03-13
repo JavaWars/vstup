@@ -36,6 +36,8 @@ public class UserDAO extends DAO<User, Integer> {
 
 	private static final String SELECT_USER_BY_EMAIL = "Select * from users where email=? ";
 
+	private static final String SELECT_COUNT_FOR_USER = "SELECT COUNT(1) FROM student_department where id_student=?";
+
 	@Override
 	public User get(Integer key) {
 		return null;
@@ -254,10 +256,40 @@ public class UserDAO extends DAO<User, Integer> {
 		ResultSet resultSet = null;
 		try {
 			preparedStatement = getPreparedStatement(null, SELECT_ALL_USERS_NOT_BANNED);
+
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-				result.add(prepareUser(resultSet));
+				User user=prepareUser(resultSet);
+				int count=new UserDAO().getDepartmentCountForUser(user.getId());
+				user.setDepartmentCount(count);
+				result.add(user);
+			}
+
+		} catch (SQLException e) {
+			logger.error("can't get all users", e);
+			throw new MyAppException("something going wrong with db", e);
+		} finally {
+			close(preparedStatement);
+			close(resultSet);
+			close(connection);
+		}
+		return result;
+	}
+
+	public int getDepartmentCountForUser(int id) {
+		logger.trace("UserDAO#getAllUsers()");
+		int result=0;
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = getPreparedStatement(null, SELECT_COUNT_FOR_USER);
+			preparedStatement.setInt(1, id);
+			resultSet = preparedStatement.executeQuery();
+
+			if (resultSet.next()) {
+				result=resultSet.getInt(1);
 			}
 
 		} catch (SQLException e) {

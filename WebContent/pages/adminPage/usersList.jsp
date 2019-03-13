@@ -42,6 +42,9 @@
 							<th><tags:lang text="user2Name"></tags:lang></th>
 							<th><tags:lang text="email"></tags:lang></th>
 							<th><tags:lang text="area"></tags:lang></th>
+							<c:if test="${isPageForBlocking==true}">
+								<th><tags:lang text="count"></tags:lang></th>
+							</c:if>
 							<th><tags:lang text="operation"></tags:lang></th>
 
 						</tr>
@@ -56,6 +59,9 @@
 								<td>${user.secondName}</td>
 								<td>${user.email}</td>
 								<td>${user.cityArea}</td>
+								<c:if test="${isPageForBlocking==true}">
+									<td>${user.departmentCount}</td>
+								</c:if>
 								<td><c:choose>
 										<c:when test="${isPageForBlocking==true}">
 											<button type="button" class="btn btn-danger"

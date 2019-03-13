@@ -1,0 +1,8 @@
+<Context>
+     
+    <ResourceLink name="jdbc/university_selection_committee"
+    global="jdbc/university_selection_committee"
+    type="javax.sql.DataSource"
+    />
+     
+</Context>

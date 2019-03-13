@@ -14,5 +14,4 @@ public enum Role {
 		return name;
 	}
 	
-	
 }

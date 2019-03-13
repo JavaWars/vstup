@@ -1,5 +1,7 @@
 package com.lazarev.db.entity;
 
+import com.lazarev.exception.MyAppException;
+
 public class StudentMark extends Subject{
 	
 	private static final long serialVersionUID = -2850096538588313673L;
@@ -21,6 +23,9 @@ public class StudentMark extends Subject{
 	}
 
 	public void setMark(double mark) {
+		if (mark<0){
+			throw new MyAppException("incorrect input mark");
+		}
 		this.mark = mark;
 	}
 

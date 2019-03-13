@@ -4,6 +4,8 @@ public class User extends Base{
 
 	private static final long serialVersionUID = -7527022320520057512L;
 
+	private int departmentCount; 
+	
 	private String name;
 	
 	private String secondName;
@@ -17,6 +19,14 @@ public class User extends Base{
 	private int cityId;
 	
 	private String cityArea;
+
+	public int getDepartmentCount() {
+		return departmentCount;
+	}
+
+	public void setDepartmentCount(int departmentCount) {
+		this.departmentCount = departmentCount;
+	}
 
 	public String getName() {
 		return name;

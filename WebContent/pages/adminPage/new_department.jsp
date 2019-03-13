@@ -271,6 +271,7 @@ $(function() {
 							<th><tags:lang text="subject"></tags:lang></th>
 							<th><tags:lang text="subjectScale"></tags:lang></th>
 							<th><tags:lang text="operation"></tags:lang></th>
+							
 						</tr>
 						<tbody></tbody>
 						<!--rows will be generated here (using jquery, see function add row)-->
