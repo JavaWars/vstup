@@ -29,7 +29,6 @@ public class TextMother implements Serializable{
 			bundle=ResourceBundle.getBundle(BASE_NAME, new Locale(language));
 		}
 		String result=bundle.getString(text);
-//		LOGGER.trace(result);
 		return result;
 	}
 
