@@ -10,11 +10,13 @@ import com.lazarev.db.entity.Department;
 import com.lazarev.db.entity.DepartmentSubject;
 import com.lazarev.db.entity.StudentMark;
 
+//todo change this
 public class JsonExtracter {
 
 	private static final Logger LOGGER = Logger.getLogger(JsonExtracter.class);
 
 	public static void extractDepartmnet(String str, Department department, List<DepartmentSubject> marks) {
+
 		LOGGER.debug("extract new department"+str);
 		JSONObject root = new JSONObject(str);
 		department.setName(root.getString("departmentName"));

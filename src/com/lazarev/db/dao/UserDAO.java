@@ -82,6 +82,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 	@Override
 	public boolean insert(User entity) {
+		//todo update fio and diplom
 
 		boolean inserted = false;
 
@@ -363,4 +364,7 @@ public class UserDAO extends DAO<User, Integer> {
 		user.setRoleId(data.getRoleId());
 	}
 
+	public boolean exist(String email) {
+		return true;
+	}
 }

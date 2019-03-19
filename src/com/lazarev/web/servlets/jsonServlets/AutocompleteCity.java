@@ -15,9 +15,9 @@ import com.lazarev.db.dao.CityDAO;
 import com.lazarev.web.json.JsonPacker;
 
 @WebServlet("/autocomplete/city")
-public class AutocompliteCity extends HttpServlet {
+public class AutocompleteCity extends HttpServlet {
 
-	private static final Logger LOGGER = Logger.getLogger(AutocompliteCity.class);
+	private static final Logger LOGGER = Logger.getLogger(AutocompleteCity.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -26,6 +26,5 @@ public class AutocompliteCity extends HttpServlet {
 		LOGGER.trace(term);
 		List<String> cityList = new CityDAO().getAllCitysWithName(term);
 		response.getWriter().print(JsonPacker.listToJsonArray(cityList));
-
 	}
 }

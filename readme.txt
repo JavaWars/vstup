@@ -19,7 +19,5 @@ add to META-INF context.xml
     global="jdbc/university_selection_committee"
     type="javax.sql.DataSource"
 />
-    
-and add support for ru language in tomcate
-     
+
 </Context>

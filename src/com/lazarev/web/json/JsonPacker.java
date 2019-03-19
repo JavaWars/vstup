@@ -11,6 +11,7 @@ import com.lazarev.db.dao.SubjectDAO;
 import com.lazarev.db.entity.Department;
 import com.lazarev.db.entity.DepartmentSubject;
 
+//todo change this
 public class JsonPacker {
 
 	private static final Logger LOGGER=Logger.getLogger(JsonPacker.class);

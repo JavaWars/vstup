@@ -1,24 +1,30 @@
 package com.lazarev.db.entity;
 
+import com.lazarev.exception.MyAppException;
+import org.apache.log4j.Logger;
+
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class User extends Base{
+	private static Logger logger = Logger.getLogger(User.class);
 
 	private static final long serialVersionUID = -7527022320520057512L;
 
-	private int departmentCount; 
-	
-	private String name;
-	
-	private String secondName;
-	
+	private String fio;
 	private String email;
-	
+	private String diplom;
+	private String phone;
+	private String name;
+	private String secondName;
 	private String password;
-	
-	private int roleId;
-	
-	private int cityId;
-	
 	private String cityArea;
+	private Date birthday;
+
+	private int roleId;
+	private int cityId;
+	private int departmentCount;
 
 	public int getDepartmentCount() {
 		return departmentCount;
@@ -57,6 +63,10 @@ public class User extends Base{
 	}
 
 	public void setPassword(String password) {
+		if (password.length()<6){
+			logger.info("password is too short. (length="+password.length()+"char, minimum 6 needed)");
+			//throw  new MyAppException("Password is so short");
+		}
 		this.password = password;
 	}
 
@@ -68,8 +78,6 @@ public class User extends Base{
 		this.cityArea = cityArea;
 	}
 
-	
-	
 	public int getRoleId() {
 		return roleId;
 	}
@@ -84,6 +92,48 @@ public class User extends Base{
 
 	public void setCityId(int cityId) {
 		this.cityId = cityId;
+	}
+
+	public String getFio() {
+		return fio;
+	}
+
+	public void setFio(String fio) {
+		String result="";
+		if ((fio.split(" ").length<3) || (fio.split(" ").length>4)){throw new MyAppException("fio MUST contain 3 part ()");}
+		String buf[]=fio.split(" ");
+
+		this.secondName=buf[0];
+		this.name=buf[1];
+		this.fio = buf[0]+" "+buf[1]+" "+buf[2];
+	}
+
+	public Date getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Date birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getDiplom() {
+		return diplom;
+	}
+
+	public void setDiplom(String diplom) {
+		String regex = "(.*)(\\d+)(.*)";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher=pattern.matcher(diplom);
+		if (!matcher.matches()){throw new MyAppException("Diplom is invalid");}
+		this.diplom = diplom;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	@Override

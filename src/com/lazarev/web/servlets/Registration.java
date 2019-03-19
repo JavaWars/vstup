@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.lazarev.service.UserService;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.Role;
@@ -45,27 +46,26 @@ public class Registration extends HttpServlet {
 			throws ServletException, IOException {
 		logger.debug("RegistrationdoPost()");
 
-		User newUser = new User();
-		newUser.setEmail(request.getParameter("email"));
-		newUser.setCityArea(request.getParameter("cityArea"));
-		newUser.setName(request.getParameter("name"));
-		newUser.setSecondName(request.getParameter("secondName"));
-		newUser.setPassword(request.getParameter("password"));
-		Role role = Role.USER;
-		newUser.setRoleId(new RoleDAO().getRoleIdByRoleName(role.getName()));
-		newUser.setCityId(new CityDAO().get(request.getParameter("city")));
-		logger.trace("newUser" + newUser);
+		UserService userService=new UserService();
 
-		UserDAO userDb = new UserDAO();
-		if (userDb.getIdByEmail(newUser.getEmail()) == 0) {
-			userDb.insert(newUser);
+		String email=request.getParameter("email");
+		if (!userService.existUserEmail(email)) {
+
+			logger.trace("user with email "+email+" will be tried insert to db");
+
+			User insertedUser=userService.insertUser(request.getParameter("email"),
+					request.getParameter("cityArea"),
+					request.getParameter("fio"),
+					request.getParameter("password"),
+					request.getParameter("city"),
+					request.getParameter("diplom"),
+					request.getParameter("phone"));
+
+			Role role = Role.USER;
 
 			request.getSession().setAttribute("ROLE", role.getName());
-			request.getSession().setAttribute("EMAIL", newUser.getEmail());
-			request.getSession().setAttribute("NAME", newUser.getName());
-
-			EmailService.getInstance().sendMessage(newUser.getEmail(), "Welcome in vstup system",
-					"welcome my dear user description");
+			request.getSession().setAttribute("EMAIL", insertedUser.getEmail());
+			request.getSession().setAttribute("NAME", insertedUser.getName());
 
 			response.sendRedirect(Constants.COMMAND_HOME);
 		} else {

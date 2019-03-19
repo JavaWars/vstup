@@ -34,7 +34,7 @@ function checkEmail(field, validationResult) {
 
 function checkTextField(field, validationResult) {
 	console.log("checking fild");
-	if ((field.value == "") || (field.value.length > 30)) {
+	if ((field.value == "") || (field.value.length > 60)) {
 		document.getElementById(validationResult).style.color = "red";
 		console.log("not valid"+field);
 	} else {

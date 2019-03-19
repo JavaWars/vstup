@@ -50,7 +50,6 @@ public class Home extends HttpServlet {
 			logger.error(" Unknown user role. Redirect to login page");
 			request.getSession().invalidate();
 			response.sendRedirect(Constants.COMMAND_REGISTRATION);
-//			request.getRequestDispatcher(Constants.COMMAND_REGISTRATION).forward(request, response);
 		}
 	}
 
