@@ -45,7 +45,9 @@ function go(path,id){
 							<td><c:choose>
 									<c:when test="${ROLE=='USER'}">
 										<button type="button" class="btn btn-primary "
-											onclick="go('departmentRating',${userPos.id})"><tags:lang text="showList"></tags:lang></button>
+											onclick="go('departmentRating',${userPos.id})">
+											<tags:lang text="showList"></tags:lang>
+										</button>
 									</c:when>
 								</c:choose></td>
 						</tr>

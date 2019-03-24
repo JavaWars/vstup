@@ -10,10 +10,15 @@ public class Constants {
 	public static final String PAGE_DEPARTMENTS = "/pages/departments.jsp";
 	public static final String PAGE_DEPARTMENT_RATING = "/pages/departmentRating.jsp";
 	public static final String PAGE_LANGUAGE = "/pages/language.jsp";
+	//superadmin pages
+	public static final String PAGE_SUPERADMIN_PHASE = "/pages/adminPage/superadmin_phase.jsp";
 	// admin pages
 	public static final String PAGE_ADMIN_CREATE_NEW_DEPARTMENT = "/pages/adminPage/new_department.jsp";
 	public static final String PAGE_ADMIN_ALL_USERS = "/pages/adminPage/usersList.jsp";
 	public static final String PAGE_ADMIN_STAT = "/pages/adminPage/adminStat.jsp";
+	public static final String PAGE_ADMIN_ENTER_QUERIES = "/pages/adminPage/query_from_users.jsp";
+//	public static final String PAGE_DEPARTMENT_ADD_MARKS = "/pages/adminPage/department_set_mark.jsp";
+
 
 	// userPages
 	public static final String PAGE_USER_STAT = "/pages/userPage/userStatistic.jsp";
@@ -36,5 +41,6 @@ public class Constants {
 
 	public static final String PDF_TEMPLATE_DIR = "WEB-INF//pdfTemplate//";
 	public static final String OUTPUT_DIR = "C://data//pdf//";
-	public static final String PDF_TEMPLATE_DIR_FOP_CONFIG = "WEB-INF//pdfTemplate//fopConfig.xml";
+	public static final String PDF_TEMPLATE_DIR_FOP_CONFIG = "WEB-INF//pdfTemplate//fopConfig.xml";	
+	
 }

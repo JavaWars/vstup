@@ -80,6 +80,13 @@
 							<td><c:choose>
 									<c:when test="${ROLE=='ADMIN'}">
 										<button type="button" class="btn btn-primary "
+											onclick="go('departmentRating',${dep.id})">
+											<tags:lang text="documentation"></tags:lang>
+										</button>
+
+									</c:when>
+									<c:when test="${ROLE=='SUPERADMIN'}">
+										<button type="button" class="btn btn-primary "
 											onclick="deleteDepartment('delDepartment',${dep.id})">
 											<tags:lang text="delete"></tags:lang>
 										</button>
@@ -91,8 +98,8 @@
 											onclick="go('departmentRating',${dep.id})">
 											<tags:lang text="documentation"></tags:lang>
 										</button>
-									</c:when>
 
+									</c:when>
 									<c:when test="${ROLE=='USER'}">
 										<button type="button" class="btn btn-primary "
 											onclick="go('enter',${dep.id})">

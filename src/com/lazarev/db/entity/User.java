@@ -3,7 +3,7 @@ package com.lazarev.db.entity;
 import com.lazarev.exception.MyAppException;
 import org.apache.log4j.Logger;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,7 +99,6 @@ public class User extends Base{
 	}
 
 	public void setFio(String fio) {
-		String result="";
 		if ((fio.split(" ").length<3) || (fio.split(" ").length>4)){throw new MyAppException("fio MUST contain 3 part ()");}
 		String buf[]=fio.split(" ");
 
@@ -138,7 +137,15 @@ public class User extends Base{
 
 	@Override
 	public String toString() {
-		return "User [name=" + name + ", secondName=" + secondName + ", email=" + email + ", roleId=" + roleId
-				+ ", cityId=" + cityId + ", cityArea=" + cityArea + "]";
+		return "User [fio=" + fio + ", email=" + email + ", diplom=" + diplom + ", phone=" + phone + ", name=" + name
+				+ ", secondName=" + secondName + ", password=" + password + ", cityArea=" + cityArea + ", birthday="
+				+ birthday + ", roleId=" + roleId + ", cityId=" + cityId + ", departmentCount=" + departmentCount + "]";
 	}
+
+	public void setBirthday(String birthday) {
+		String arr[]=birthday.split("-");
+		Date  d=new Date(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+		this.setBirthday(d);
+	}
+
 }

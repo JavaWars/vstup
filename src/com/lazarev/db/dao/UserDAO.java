@@ -20,7 +20,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 	private static final String SELECT_USER_BY_LOGIN_AND_PASSWORD = "Select * from users where email=? and password=? ";
 
-	private static final String INSERT_INTO_USER = "insert into users values( DEFAULT ,?, ?, ?, ?, ?, ?, ?);";
+	private static final String INSERT_INTO_USER = "insert into users values( DEFAULT ,?,?, ?, ?, ?, ?, ?,?,?, ?);";
 
 	private static final String SELECT_ALL_BANNED_USERS = "SELECT users.id, users.`name`, users.secondName, users.email, users.`password`, users.id_role, users.id_city, users.area"
 			+ " FROM ban INNER JOIN users ON ban.userId = users.id";
@@ -90,6 +90,7 @@ public class UserDAO extends DAO<User, Integer> {
 		logger.trace("inserted user" + entity);
 		try {
 			int k = 1;
+			prepared.setString(k++, entity.getFio());
 			prepared.setString(k++, entity.getName());
 			prepared.setString(k++, entity.getSecondName());
 			prepared.setString(k++, entity.getEmail());
@@ -99,7 +100,9 @@ public class UserDAO extends DAO<User, Integer> {
 			prepared.setInt(k++, entity.getCityId());
 
 			prepared.setString(k++, entity.getCityArea());
-
+			
+			prepared.setString(k++, entity.getDiplom());
+			prepared.setDate(k++, entity.getBirthday());
 			logger.debug("insert user" + prepared.executeUpdate());
 			inserted = true;
 		} catch (SQLException e) {
@@ -365,6 +368,30 @@ public class UserDAO extends DAO<User, Integer> {
 	}
 
 	public boolean exist(String email) {
-		return true;
+		logger.debug("checking existing user by email" + email);
+
+		prepareConnectionToWork(connection);
+		PreparedStatement prepared = getPreparedStatement(connection, SELECT_USER_BY_EMAIL);
+		ResultSet set = null;
+
+		try {
+			int k = 1;
+			prepared.setString(k++, email);
+
+			set = prepared.executeQuery();
+
+			if (set.next()) {
+				logger.info("user with given email "+email+" exist");
+				return true;
+			}
+
+		} catch (SQLException e) {
+			logger.error("can't get result from table user by query " + SELECT_USER_BY_EMAIL, e);
+			throw new MyAppException("Something going wrong");
+		} finally {
+			close(prepared);
+			close(set);
+		}
+		return false;
 	}
 }

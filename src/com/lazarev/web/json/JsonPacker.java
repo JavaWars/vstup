@@ -34,7 +34,8 @@ public class JsonPacker {
 			JSONObject markJson = new JSONObject();
 			DepartmentSubject s=marks.get(i);
 			markJson.put("markName", s.getName());
-			markJson.put("markScale", s.getScale());
+			markJson.put("markMaxValue", s.getMaxMark());
+			markJson.put("isUserEntered", s.getUserEntered());
 			marksJson.put(markJson);	
 		}
 		departmentJson.put("marks", marksJson);

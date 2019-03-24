@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.lazarev.db.Role;
+import com.lazarev.db.entity.Role;
 import com.lazarev.exception.MyAppException;
 
 public class RoleDAO extends DAO<Role, Integer> {

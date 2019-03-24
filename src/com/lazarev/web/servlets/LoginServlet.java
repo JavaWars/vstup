@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.lazarev.db.Role;
+import com.lazarev.db.entity.Role;
 import com.lazarev.db.dao.RoleDAO;
 import com.lazarev.db.dao.UserDAO;
 import com.lazarev.db.entity.User;

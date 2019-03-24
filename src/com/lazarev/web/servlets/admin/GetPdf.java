@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.lazarev.util.PdfCreator;
-import com.lazarev.util.PdfCreator;
 import com.lazarev.web.Constants;
 
 @WebServlet("/pdf")
@@ -60,7 +59,7 @@ public class GetPdf extends HttpServlet {
 		while ((bytes = fileInputStream.read()) != -1) {
 			responseOutputStream.write(bytes);
 		}
-
+		fileInputStream.close();
 	}
 
 }

@@ -9,7 +9,7 @@
 
 <script type="text/javascript">
 	function validateEmail(email) {
-		console.log("checking email "+email);
+		console.log("checking email " + email);
 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return re.test(email);
 	}
@@ -29,33 +29,36 @@
 	<div class="container theme-showcase" role="main">
 
 
-	<div class="jumbotron row">
+		<div class="jumbotron row">
 
-		<div class="col-md-2 col-md-offset-5">
+			<div class="col-md-2 col-md-offset-5">
 
-			<c:set var="context" value="${pageContext.request.contextPath}" />
+				<c:set var="context" value="${pageContext.request.contextPath}" />
 
-			<form action="${context}/login" method="post"
-				onsubmit="return continueOrNot()">
-				<div>
-					email<input type="text" name="email" id='email' />
-				</div>
-				<div>
-					password<input type="password" name="password" />
-				</div>
-				<div>
-					<input type="submit" value="login" id='validate'
-						class="btn btn-success" /> <input type="reset" value="clear"
-						class="btn btn-primary" />
-				</div>
-				<a href="${context}/registration">i'm new user</a>
+				<form action="${context}/login" method="post"
+					onsubmit="return continueOrNot()">
+					<div>
+						<tags:lang text="registration.email"></tags:lang>
+						<input type="text" name="email" id='email' />
+					</div>
+					<div>
+						<tags:lang text="registration.password"></tags:lang>
+						<input type="password" name="password" />
+					</div>
+					<div>
+						<button type="submit" id='validate' class="btn btn-success">
+							<tags:lang text="registration.login"></tags:lang>
+						</button>
+					</div>
+					<a href="${context}/registration"><tags:lang
+							text="registration.i_am_new_user"></tags:lang></a>
 
-			</form>
+				</form>
+			</div>
+
+			<h2 id='validationResult'></h2>
 		</div>
-
-		<h2 id='validationResult'></h2>
 	</div>
-</div>
 
 </body>
 </html>

@@ -16,7 +16,7 @@ import com.lazarev.web.json.JsonPacker;
 
 @WebServlet("/autocomplete/city")
 public class AutocompleteCity extends HttpServlet {
-
+	
 	private static final Logger LOGGER = Logger.getLogger(AutocompleteCity.class);
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

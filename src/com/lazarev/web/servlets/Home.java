@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.lazarev.db.Role;
+import com.lazarev.db.entity.Role;
 import com.lazarev.web.Constants;
 
 @WebServlet("/home")
@@ -35,6 +35,7 @@ public class Home extends HttpServlet {
 
 		if (roleConfirmed) {
 			switch (role) {
+			case SUPERADMIN:
 			case ADMIN:
 				response.sendRedirect(Constants.COMMAND_ALL_DEPARTMENTS);
 				break;

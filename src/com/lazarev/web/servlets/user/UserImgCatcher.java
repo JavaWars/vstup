@@ -39,7 +39,7 @@ public class UserImgCatcher extends HttpServlet {
 			Part filePart = request.getPart("file"); // Retrieves <input
 														// type="file"
 														// name="file">
-			String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+			//String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
 			InputStream fileContent = filePart.getInputStream();
 
 			byte[] buffer = new byte[fileContent.available()];

@@ -12,9 +12,17 @@ Header
 		</div>
 		<div id="navbar" class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
+				<li><a href="departments"><tags:lang text="department"></tags:lang></a></li>
 				<c:choose>
 					<c:when test="${ROLE=='ADMIN'}">
-						<li><a href="departments"><tags:lang text="department"></tags:lang></a></li>
+						<li><a href="enterQueries"><tags:lang text="enterQueries"></tags:lang></a></li>
+						<li><a href="cleanUser"><tags:lang text="users"></tags:lang></a></li>
+						<li><a href="bannedUser"><tags:lang text="usersBlocked"></tags:lang></a></li>
+					</c:when>
+					<c:when test="${ROLE=='SUPERADMIN'}">
+
+						<li><a href="phase"><tags:lang text="phase"></tags:lang></a></li>
+						<li><a href="enterQueries"><tags:lang text="enterQueries"></tags:lang></a></li>
 						<li><a href="newDepartment"><tags:lang
 									text="newDepartment"></tags:lang></a></li>
 						<li><a href="cleanUser"><tags:lang text="users"></tags:lang></a></li>
@@ -22,7 +30,6 @@ Header
 					</c:when>
 					<c:when test="${ROLE=='USER'}">
 						<li><a href="userMark"><tags:lang text="profile"></tags:lang></a></li>
-						<li><a href="departments"><tags:lang text="department"></tags:lang></a></li>
 						<li><a href="userStat"><tags:lang text="statistic"></tags:lang></a></li>
 					</c:when>
 				</c:choose>

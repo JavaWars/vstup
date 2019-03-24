@@ -15,6 +15,8 @@ import org.apache.log4j.Logger;
 import com.lazarev.db.dao.DepartmentDAO;
 import com.lazarev.db.entity.Department;
 import com.lazarev.db.entity.DepartmentSubject;
+import com.lazarev.exception.MyAppException;
+import com.lazarev.service.DepartmentService;
 import com.lazarev.web.Constants;
 import com.lazarev.web.json.JsonExtracter;
 import com.lazarev.web.servlets.helper.Helper;
@@ -28,19 +30,22 @@ public class NewDepartment extends HttpServlet {
 			throws ServletException, IOException {
 		LOGGER.debug("NewDepartment@doGet()");
 		request.getRequestDispatcher(Constants.PAGE_ADMIN_CREATE_NEW_DEPARTMENT).forward(request, response);
-
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		LOGGER.debug("NewDepartment@doPost()");
 
-		
-		Department department=new Department();
-		List<DepartmentSubject> marks=new LinkedList<>();
-		JsonExtracter.extractDepartmnet(Helper.getJsonQuery(request),department,marks);
-		new DepartmentDAO().insertDepartment(department, marks);
+		Department department = new Department();
+		List<DepartmentSubject> marks = new LinkedList<>();
+		JsonExtracter.extractDepartmnet(Helper.getJsonQuery(request), department, marks);
+		try {
+			new DepartmentService().insertDepWithMarks(department, marks);
+		} catch (MyAppException e) {
+			LOGGER.error(e.getMessage());
+			response.getWriter().append(e.getMessage());
+			response.setStatus(500);
+		}
 	}
 
-		
 }

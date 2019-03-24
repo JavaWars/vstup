@@ -83,7 +83,8 @@ public abstract class DAO<E, K> {
 
 	protected void close(AutoCloseable closeRes) {
 		try {
-			closeRes.close();
+			if (closeRes != null)
+				closeRes.close();
 		} catch (Exception e) {
 			logger.error("Cannot close a resource: " + closeRes, e);
 			throw new MyAppException("something EXTREMELY BAD HAPPENED with db", e);

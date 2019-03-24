@@ -1,17 +1,18 @@
 package com.lazarev.service;
 
-import com.lazarev.db.Role;
+import com.lazarev.db.entity.Role;
 import com.lazarev.db.dao.CityDAO;
 import com.lazarev.db.dao.RoleDAO;
 import com.lazarev.db.dao.UserDAO;
 import com.lazarev.db.entity.User;
 import com.lazarev.util.EmailService;
+
 import org.apache.log4j.Logger;
 
 public class UserService {
     private static Logger logger = Logger.getLogger(UserService.class);
 
-    public User insertUser(String email, String cityArea, String fio, String password, String city, String diplom, String phone){
+    public User insertUser(String email, String cityArea, String fio, String password, String city, String diplom, String phone,String birthday){
 
         User newUser = new User();
         newUser.setEmail(email);
@@ -23,6 +24,10 @@ public class UserService {
         newUser.setCityId(new CityDAO().get(city));
         newUser.setDiplom(diplom);
         newUser.setPhone(phone);
+        
+        logger.trace("birthday"+birthday);
+        
+        newUser.setBirthday(birthday);
         logger.trace("newUser" + newUser);
 
         UserDAO userDb = new UserDAO();

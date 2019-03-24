@@ -97,10 +97,11 @@ public class MarkDAO extends DAO<Subject, Integer> {
 	}
 
 	private boolean insertUserMark(int userId, StudentMark studentMark) {
-		LOGGER.debug("inserting user mark for deparment");
+		LOGGER.debug("inserting user mark for deparment "+userId+" studentMark "+studentMark);
 		boolean result = true;
 		PreparedStatement preparedStatement = getPreparedStatement(connection, CALL_INSERT_USER_MARK);
 		try {
+			System.out.println(userId+"|"+studentMark.getId()+"|"+studentMark.getMark());
 			preparedStatement.setInt(1, userId);
 			preparedStatement.setInt(2, studentMark.getId());
 			preparedStatement.setDouble(3, studentMark.getMark());
@@ -119,7 +120,7 @@ public class MarkDAO extends DAO<Subject, Integer> {
 		return result;
 	}
 
-	public void insertUserMarks(Department department, List<StudentMark> marks, String userLigin) {
+	public void insertUserMarks(Department department, List<StudentMark> marks, String userLogin) {
 		LOGGER.debug("user insert marks for department " + department.getId() + " ,marks size=" + marks.size());
 
 		boolean ok = true;
@@ -130,7 +131,7 @@ public class MarkDAO extends DAO<Subject, Integer> {
 
 			UserDAO userDB = new UserDAO();
 			userDB.setConnection(connection);
-			int userId = userDB.getIdByEmail(userLigin);
+			int userId = userDB.getIdByEmail(userLogin);
 
 			if (insertUserDepartment(userId, department.getId())) {
 				for (int i = 0; i < marks.size(); i++) {

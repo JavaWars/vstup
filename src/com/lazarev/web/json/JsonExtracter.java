@@ -27,7 +27,8 @@ public class JsonExtracter {
 		for (int i = 0; i < arr.length(); i++) {
 			DepartmentSubject mark = new DepartmentSubject();
 			mark.setName(arr.getJSONObject(i).getJSONObject("mark").getString("name"));
-			mark.setScale(arr.getJSONObject(i).getJSONObject("mark").getDouble("scale"));
+			mark.setMaxMark(arr.getJSONObject(i).getJSONObject("mark").getDouble("markMaxValue"));
+			mark.setUserEntered(arr.getJSONObject(i).getJSONObject("mark").getBoolean("is_user_entered"));
 			marks.add(mark);
 		}
 	}

@@ -16,6 +16,8 @@ import com.lazarev.db.dao.MarkDAO;
 import com.lazarev.db.dao.UserDAO;
 import com.lazarev.db.entity.Department;
 import com.lazarev.db.entity.StudentMark;
+import com.lazarev.exception.MyAppException;
+import com.lazarev.service.MarkService;
 import com.lazarev.web.Constants;
 import com.lazarev.web.json.JsonExtracter;
 import com.lazarev.web.servlets.helper.Helper;
@@ -48,7 +50,15 @@ public class UserMark extends HttpServlet {
 		List<StudentMark> marks = new LinkedList<>();
 		JsonExtracter.extractUserMarks(Helper.getJsonQuery(request), department, marks);
 		String userLogin = (String) request.getSession().getAttribute("EMAIL");
-		new MarkDAO().insertUserMarks(department, marks, userLogin);
+
+		try {
+		new MarkService().insertUserMark(userLogin, department, marks);
+		}
+		catch (MyAppException e) {
+			LOGGER.error(e.getMessage());
+			response.getWriter().append(e.getMessage());
+			response.setStatus(500);
+		}
 	}
 
 }

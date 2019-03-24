@@ -51,7 +51,7 @@
 					</tbody>
 				</table>
 			</div>
-			<c:if test="${ROLE=='ADMIN'}">
+			<c:if test="${ROLE=='SUPERADMIN'}">
 				<button type="button" class="btn btn-primary " onclick="pdf(${id})">
 					<tags:lang text="pdf"></tags:lang>
 				</button>

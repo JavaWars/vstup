@@ -6,7 +6,7 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
-public class TextMother implements Serializable{
+public class TextMother implements Serializable {
 
 	private static final long serialVersionUID = 3181022600291753863L;
 
@@ -19,19 +19,15 @@ public class TextMother implements Serializable{
 	private static final String BASE_NAME = "i18n.resources";
 
 	public String getText(String language, String text) {
-//		LOGGER.trace("call translation module lang= " + language + " " + text);
+		//LOGGER.trace("call translation module lang= " + language + " " + text);
 		ResourceBundle bundle = null;
 
-		if (language==null || language==""){
-			bundle=ResourceBundle.getBundle(BASE_NAME, new Locale("en"));
+		if (language == null || language == "") {
+			bundle = ResourceBundle.getBundle(BASE_NAME, new Locale("ua"));
+		} else {
+			bundle = ResourceBundle.getBundle(BASE_NAME, new Locale(language));
 		}
-		else{
-//			if (language=="ukrainian")
-//					bundle=ResourceBundle.getBundle(BASE_NAME,new Locale("ua"));
-//			else
-				bundle=ResourceBundle.getBundle(BASE_NAME, new Locale(language));
-		}
-		String result=bundle.getString(text);
+		String result = bundle.getString(text);
 		return result;
 	}
 

@@ -25,11 +25,11 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 	private static final String SELECT_SUBJECT_BY_NAME = "select * from subject where name=?";
 
-	private static final String INSERT_DEPARTMENT_SUBJECT = "insert into need_subject_for_department values(?,?,?)";
+	private static final String INSERT_DEPARTMENT_SUBJECT = "insert into need_subject_for_department values(?,?,?,?,?)";
 
 	private static final String DELETE_MARKS_BY_DEPARTMENT = "delete from need_subject_for_department where id_dep=?";
 
-	private static final String SELECT_SUBJECT_FOR_DEPARTMET = "SELECT `subject`.id,need_subject_for_department.scale, `subject`.`name` from `subject`, need_subject_for_department where need_subject_for_department.id_sub=`subject`.id and need_subject_for_department.id_dep=?";
+	private static final String SELECT_SUBJECT_FOR_DEPARTMET = "SELECT * from `subject`, need_subject_for_department where need_subject_for_department.id_sub=`subject`.id and need_subject_for_department.id_dep=?";
 
 	private static final String SELECT_ALL_SUBJECT_BY_NAME = "SELECT `subject`.`name` FROM `subject` where `subject`.`name` like ?";
 
@@ -141,6 +141,8 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 			preparedStatement.setInt(k++, idDepartment);
 			preparedStatement.setInt(k++, departmentSubject.getId());
 			preparedStatement.setDouble(k++, departmentSubject.getScale());
+			preparedStatement.setDouble(k++, departmentSubject.getMaxMark());
+			preparedStatement.setBoolean(k++, departmentSubject.getUserEntered());
 
 			int x = preparedStatement.executeUpdate();
 
@@ -198,7 +200,7 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 			// insert department subject
 			if (!insertSubjectForDepartment(idDepartment, subjects.get(i))) {
-				throw new MyDbException("");
+				throw new MyDbException("cant insert subject for department");
 			}
 		}
 
@@ -293,6 +295,8 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 			subject.setId(resultSet.getInt("id"));
 			subject.setName(resultSet.getString("name"));
 			subject.setScale(resultSet.getDouble("scale"));
+			subject.setMaxMark(resultSet.getDouble("max_posible_value"));
+			subject.setUserEntered(resultSet.getBoolean("is_user_entered"));
 		} catch (SQLException e) {
 			LOGGER.error("can not prepare subject", e);
 			throw new MyAppException("something going wrong with db", e);

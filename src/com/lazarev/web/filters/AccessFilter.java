@@ -1,7 +1,6 @@
 package com.lazarev.web.filters;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 
-import com.lazarev.db.Role;
+import com.lazarev.db.entity.Role;
 import com.lazarev.db.dao.UserDAO;
 import com.lazarev.web.Constants;
 
@@ -32,6 +31,8 @@ public class AccessFilter implements Filter {
 
 	private Map<Role, List<String>> accessMap = new HashMap<Role, List<String>>();
 
+	private List<String> allSpecialPages = new LinkedList<>();
+	
 	public void destroy() {
 	}
 
@@ -69,7 +70,7 @@ public class AccessFilter implements Filter {
 
 					} else {
 
-						logger.debug("User have access to seccurity Zone redddirecting to path "
+						logger.debug("User have access to seccurity Zone reddirecting to path "
 								+ ((HttpServletRequest) request).getServletPath());
 
 						chain.doFilter(request, response);
@@ -119,7 +120,7 @@ public class AccessFilter implements Filter {
 			Object objRole = session.getAttribute("ROLE");
 			if (objRole != null) {
 				role = Role.valueOf((String) objRole);
-				logger.info("USER ROLE is null");
+				logger.info("USER ROLE is not null");
 
 			}
 		}
@@ -147,22 +148,18 @@ public class AccessFilter implements Filter {
 	// return true if user need any access rule
 	private boolean needAsses(String path) {
 
-		List<String> allSpecialPages = new LinkedList<>();
-
-		for (Entry<Role, List<String>> entry : accessMap.entrySet()) {
-			allSpecialPages.addAll(entry.getValue());
-		}
-
 		return allSpecialPages.contains(path);
 
 	}
 
 	public void init(FilterConfig fConfig) throws ServletException {
 		logger.debug("AccessFilter init");
-
+		putAndPrint(fConfig, Role.SUPERADMIN);
 		putAndPrint(fConfig, Role.ADMIN);
 		putAndPrint(fConfig, Role.USER);
-
+		for (Entry<Role, List<String>> entry : accessMap.entrySet()) {
+			allSpecialPages.addAll(entry.getValue());
+		}
 	}
 
 	private void putAndPrint(FilterConfig fConfig, Role role) {
@@ -178,7 +175,7 @@ public class AccessFilter implements Filter {
 	///////////////////////////////////////////////
 	// util
 	private List<String> asList(String str) {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new LinkedList<String>();
 		StringTokenizer st = new StringTokenizer(str);
 		while (st.hasMoreTokens()) {
 			list.add(st.nextToken());

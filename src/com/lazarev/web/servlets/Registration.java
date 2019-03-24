@@ -1,6 +1,7 @@
 package com.lazarev.web.servlets;
 
 import java.io.IOException;
+import java.sql.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,13 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.lazarev.service.UserService;
 import org.apache.log4j.Logger;
 
-import com.lazarev.db.Role;
-import com.lazarev.db.dao.CityDAO;
-import com.lazarev.db.dao.RoleDAO;
-import com.lazarev.db.dao.UserDAO;
+import com.lazarev.db.entity.Role;
 import com.lazarev.db.entity.User;
-import com.lazarev.exception.MyAppException;
-import com.lazarev.util.EmailService;
 import com.lazarev.web.Constants;
 
 @WebServlet("/registration")
@@ -59,7 +55,8 @@ public class Registration extends HttpServlet {
 					request.getParameter("password"),
 					request.getParameter("city"),
 					request.getParameter("diplom"),
-					request.getParameter("phone"));
+					request.getParameter("phone"),
+					request.getParameter("birthday"));
 
 			Role role = Role.USER;
 

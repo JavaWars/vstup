@@ -31,6 +31,18 @@
 	</script>
 
 	<div class="jumbotron container theme-showcasejumbotron" role="main">
+		<c:if test="${ROLE=='ADMIN' && isPageForBlocking==true}">
+			<div class="jumbotron row">
+				<c:if test="${ROLE=='ADMIN'}">
+				Set Marks for group for group
+				mark type
+				key kolumn
+				value kolumn
+				submit
+				filter
+			</c:if>
+			</div>
+		</c:if>
 		<div class="jumbotron row">
 			<div class="jumbotron bs-example" data-example-id="simple-table">
 				<table class="table">
@@ -38,15 +50,20 @@
 						<tr>
 							<th>#</th>
 							<th><tags:lang text="id"></tags:lang></th>
+							<th><tags:lang text="fio"></tags:lang></th>
 							<th><tags:lang text="userName"></tags:lang></th>
 							<th><tags:lang text="user2Name"></tags:lang></th>
 							<th><tags:lang text="email"></tags:lang></th>
-							<th><tags:lang text="area"></tags:lang></th>
+							<%--
 							<c:if test="${isPageForBlocking==true}">
 								<th><tags:lang text="count"></tags:lang></th>
 							</c:if>
+							 --%>
+							<th><tags:lang text="diplom"></tags:lang></th>
 							<th><tags:lang text="operation"></tags:lang></th>
-
+							<c:if test="${ROLE=='ADMIN' && isPageForBlocking==true}">
+								<th>Set Mark</th>
+							</c:if>
 						</tr>
 					</thead>
 					<tbody>
@@ -55,13 +72,16 @@
 							<tr>
 								<th scope="row"></th>
 								<td>${user.id}</td>
+								<td>fio todo</td>
 								<td>${user.name}</td>
 								<td>${user.secondName}</td>
 								<td>${user.email}</td>
-								<td>${user.cityArea}</td>
+								<td>todo diplom</td>
+								<%--
 								<c:if test="${isPageForBlocking==true}">
 									<td>${user.departmentCount}</td>
 								</c:if>
+								 --%>
 								<td><c:choose>
 										<c:when test="${isPageForBlocking==true}">
 											<button type="button" class="btn btn-danger"
@@ -77,6 +97,14 @@
 											</button>
 										</c:otherwise>
 									</c:choose></td>
+								<c:if test="${ROLE=='ADMIN' && isPageForBlocking==true}">
+									<th>
+										<ul>
+											<li>1</li>
+											<li>1</li>
+										</ul>
+									</th>
+								</c:if>
 							</tr>
 						</c:forEach>
 

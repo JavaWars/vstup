@@ -1,4 +1,4 @@
-<%--this code need be written in a single line style, or you will see problem--%><%@ attribute
+<%@ attribute
 	name="text" required="true" type="java.lang.String"%><%@ taglib
 	uri="http://java.sun.com/jsp/jstl/core" prefix="c"%><%@ taglib
 	uri="http://java.sun.com/jsp/jstl/functions" prefix="fun"%><jsp:useBean

@@ -31,7 +31,7 @@ public class StudentMark extends Subject{
 
 	@Override
 	public String toString() {
-		return "UserMark [userId=" + userId + ", mark=" + mark + "]";
+		return "StudentMark [userId=" + userId + ", mark=" + mark + "]";
 	}
 	
 }

@@ -17,7 +17,7 @@
 
 				for (var i = 0; i < result.marks.length; i++) {
 					var mark = result.marks[i];
-					insertMarkToList(mark.markName, mark.markScale, i);
+					insertMarkToList(mark.markName, mark.markMaxValue,mark.isUserEntered, i);
 				}
 
 			});
@@ -38,7 +38,7 @@
 						window.location.href="departments";
 					}
 					if (xhr.readyState === 4 && this.status == 500) {
-						alert("oops, check input data");
+						alert("oops"+xhr.responseText);
 					}
 				};
 				var myJsonString = JSON.stringify(list);
@@ -65,25 +65,29 @@
 
 	function clearMark() {
 		$("#markName").val('');
-		$("#markScale").val('');
+		$("#markMaxValue").val('');
+		$("#markWillBeSetByUser").prop('checked', false);
 	}
 
 	function addRow() {
 		if (validateNewMark()) {
 
+			console.log($("#markWillBeSetByUser").prop("checked"));
 			var markName = $("#markName").val();
-			var markScale = $("#markScale").val();
+			var markMaxValue = $("#markMaxValue").val();
+			var markEnteredByUser=$("#markWillBeSetByUser").prop("checked");
 			clearMark();
 
 			nextId++;
-			insertMarkToList(markName, markScale, nextId);
+			insertMarkToList(markName, markMaxValue,markEnteredByUser, nextId);
 		}
 	}
 
-	function insertMarkToList(markName, markScale, idNext) {
+	function insertMarkToList(markName, markMaxValue,ismarkEnteredByUser, idNext) {
 		var newMark = {
 			name : markName,
-			scale : markScale,
+			markMaxValue : markMaxValue,
+			is_user_entered : ismarkEnteredByUser,
 			id : idNext
 		};
 
@@ -91,6 +95,10 @@
 			mark : newMark
 		});
 
+		var isUserS;
+		if (ismarkEnteredByUser) isUserS='<tags:lang text="enteredByUser"></tags:lang>';
+		else isUserS='<tags:lang text="enteredByUniversity"></tags:lang>';
+		
 		$('#myTable')
 				.append(
 						'<tr id="'+idNext+'">'
@@ -101,7 +109,8 @@
 								+ markName
 								+ '</td>'
 								+ '<td>'
-								+ markScale
+								+ markMaxValue
+								+ ','+isUserS
 								+ '</td>'
 								+ '<td><button class="btn btn-danger" onclick="removeRow('
 								+ idNext + ')"><tags:lang text="remove"></tags:lang></td>' + '</tr>');
@@ -124,7 +133,7 @@
 	function create() {
 		if (validateDep()) {
 			var xhr = new XMLHttpRequest();
-			var url = "/vstup/newDepartment";
+			var url ="newDepartment";
 			xhr.open("POST", url, true);
 			xhr.setRequestHeader("Content-type", "application/json");
 			xhr.onreadystatechange = function() {
@@ -133,7 +142,7 @@
 					window.location.href = "departments";
 				}
 				if (xhr.readyState === 4 && this.status == 500) {
-					alert("oops, check input data");
+					alert("oops,"+xhr.responseText);
 				}
 			};
 			var myJsonString = JSON.stringify(list);
@@ -169,7 +178,7 @@
 	function validateNewMark() {
 		if ((checkTextField(document.getElementById('markName'),
 				'markValidation'))
-				&& (checkTextField(document.getElementById('markScale'),
+				&& (checkTextField(document.getElementById('markMaxValue'),
 						'markValidation'))) {
 
 			console.log("data for mark is valid ");
@@ -269,9 +278,8 @@ $(function() {
 						<tr>
 							<th>#</th>
 							<th><tags:lang text="subject"></tags:lang></th>
-							<th><tags:lang text="subjectScale"></tags:lang></th>
+							<th><tags:lang text="subjectMaxValue"></tags:lang></th>
 							<th><tags:lang text="operation"></tags:lang></th>
-							
 						</tr>
 						<tbody></tbody>
 						<!--rows will be generated here (using jquery, see function add row)-->
@@ -284,18 +292,15 @@ $(function() {
 									<input id="markName" type="text" name="markName">
 								</div>
 							</td>
-							<td><input type="number" id="markScale" min="0" max="999"
+							<td><input type="number" id="markMaxValue" min="0" max="200"
 								maxlength="3" /></td>
-							<td>
-								<!-- 
-					admin want add this mark to table
-					 -->
+
+							<td><input type="checkbox" id="markWillBeSetByUser">
+							<tags:lang text="user_defined"></tags:lang>
 								<button type="button" class="btn btn-primary" onclick="addRow()">
 									<tags:lang text="add"></tags:lang>
 								</button> <!-- Indicates a successful or positive action -->
-								<p id="markValidation"></p>
-
-							</td>
+								<p id="markValidation"></p></td>
 						</tr>
 					</table>
 				</div>
@@ -316,7 +321,6 @@ $(function() {
 							</button>
 						</c:otherwise>
 					</c:choose>
-
 				</div>
 			</div>
 		</div>

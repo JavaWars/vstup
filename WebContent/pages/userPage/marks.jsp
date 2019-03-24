@@ -22,6 +22,7 @@
 	}
 
 	function enter() {
+		list = [];
 		var ok = true;
 		var collection = $(".studentMark");
 		collection.each(function() {
@@ -54,7 +55,7 @@
 				window.location.href = "home";
 			}
 			if (xhr.readyState === 4 && this.status == 500) {
-				alert("oops, something wrong");
+				alert("oops, something wrong "+xhr.responseText);
 			}
 		};
 		var myJsonString = JSON.stringify(list);
@@ -64,7 +65,6 @@
 		};
 		var res = JSON.stringify(data);
 		xhr.send(res);
-
 	}
 </script>
 
@@ -118,12 +118,14 @@
 						<tbody>
 							<!--marks to set-->
 							<c:forEach items="${marks}" var="mark">
-								<tr>
-									<td></td>
-									<td><p id="${mark.id}Validation">${mark.name}</p></td>
-									<td><input type="number" min="0" max="100" maxlength="3" class="studentMark"
-										id="${mark.id}" /></td>
-								</tr>
+								<c:if test="${mark.userEntered==true}">
+									<tr>
+										<td>${mark.id}</td>
+										<td><p id="${mark.id}Validation">${mark.name}</p></td>
+										<td><input type="number" min="0" max="100" maxlength="3"
+											class="studentMark" id="${mark.id}" /></td>
+									</tr>
+								</c:if>
 							</c:forEach>
 						</tbody>
 						<!--rows will be generated here (using jquery, see function add row)-->
