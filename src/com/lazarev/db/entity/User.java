@@ -7,10 +7,8 @@ import java.sql.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class User extends Base{
+public class User extends Base {
 	private static Logger logger = Logger.getLogger(User.class);
-
-	private static final long serialVersionUID = -7527022320520057512L;
 
 	private String fio;
 	private String email;
@@ -63,9 +61,9 @@ public class User extends Base{
 	}
 
 	public void setPassword(String password) {
-		if (password.length()<6){
-			logger.info("password is too short. (length="+password.length()+"char, minimum 6 needed)");
-			//throw  new MyAppException("Password is so short");
+		if (password.length() < 6) {
+			logger.info("password is too short. (length=" + password.length() + "char, minimum 6 needed)");
+			// throw new MyAppException("Password is so short");
 		}
 		this.password = password;
 	}
@@ -99,12 +97,17 @@ public class User extends Base{
 	}
 
 	public void setFio(String fio) {
-		if ((fio.split(" ").length<3) || (fio.split(" ").length>4)){throw new MyAppException("fio MUST contain 3 part ()");}
-		String buf[]=fio.split(" ");
+		if ((fio != null) && (!fio.equals("")))
+			if ((fio.split(" ").length < 3) || (fio.split(" ").length > 4)) {
+				logger.error("fio MUST contain 3 part ()");
+				// throw new MyAppException("fio MUST contain 3 part ()");
+			} else {
+				String buf[] = fio.split(" ");
 
-		this.secondName=buf[0];
-		this.name=buf[1];
-		this.fio = buf[0]+" "+buf[1]+" "+buf[2];
+				this.secondName = buf[0];
+				this.name = buf[1];
+				this.fio = buf[0] + " " + buf[1] + " " + buf[2];
+			}
 	}
 
 	public Date getBirthday() {
@@ -120,11 +123,15 @@ public class User extends Base{
 	}
 
 	public void setDiplom(String diplom) {
-		String regex = "(.*)(\\d+)(.*)";
-		Pattern pattern = Pattern.compile(regex);
-		Matcher matcher=pattern.matcher(diplom);
-		if (!matcher.matches()){throw new MyAppException("Diplom is invalid");}
-		this.diplom = diplom;
+		if ((diplom != null) && (!"".equals(diplom))) {
+			String regex = "(.*)(\\d+)(.*)";
+			Pattern pattern = Pattern.compile(regex);
+			Matcher matcher = pattern.matcher(diplom);
+			if (!matcher.matches()) {
+				throw new MyAppException("Diplom is invalid");
+			}
+			this.diplom = diplom;
+		}
 	}
 
 	public String getPhone() {
@@ -143,8 +150,8 @@ public class User extends Base{
 	}
 
 	public void setBirthday(String birthday) {
-		String arr[]=birthday.split("-");
-		Date  d=new Date(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+		String arr[] = birthday.split("-");
+		Date d = new Date(Integer.parseInt(arr[2]), Integer.parseInt(arr[1]), Integer.parseInt(arr[0]));
 		this.setBirthday(d);
 	}
 

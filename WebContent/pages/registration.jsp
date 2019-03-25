@@ -44,7 +44,7 @@
 				{
 					source : function(request, response) {
 						$.ajax({
-							url : "/autocomplete/city",
+							url : "autocomplete/city",
 							dataType : "json",
 							data : {
 								term : request.term

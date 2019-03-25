@@ -10,49 +10,112 @@
 	<%@ include file="/pages/jspf/directive/header.jspf"%>
 	<%-- HEADER --%>
 	<script type="text/javascript">
+	var currentPage=${page};
+	
 		function banUser(url, id) {
-
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-					location.reload();
-				}
-				if (xhr.readyState === 4 && this.status == 500) {
-					alert("oops");
-				}
-			};
-			xhttp.open("POST", url, true);
-			xhttp.setRequestHeader("Content-type",
-					"application/x-www-form-urlencoded");
-			var data = "id=" + id;
-			xhttp.send(data);
-			reload();
+			<c:if test="${isPageForBlocking==true}">
+				if (confirm('<tags:lang text="banUser"></tags:lang>?')) {
+			</c:if>
+			<c:if test="${isPageForBlocking==false}">
+				if (confirm('<tags:lang text="unBlockUser"></tags:lang>?')) {
+			</c:if>
+			
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function() {
+					if (this.readyState == 4 && this.status == 200) {
+						location.reload();
+					}
+					if (xhr.readyState === 4 && this.status == 500) {
+						alert("oops");
+					}
+				};
+				xhttp.open("POST", url, true);
+				xhttp.setRequestHeader("Content-type",
+						"application/x-www-form-urlencoded");
+				var data = "id=" + id;
+				xhttp.send(data);
+				reload();
+			} else {
+				// Do nothing!
+			}
+		}
+				
+		function filterUser() {
+			<c:if test="${isPageForBlocking==false}">
+			console.log("filterBannedUser");
+			//alert($("#filterFio").val()+$("#filterEmail").val()+$("#filterDiplom").val());
+			window.location.href="bannedUser?page="+currentPage
+				+"&fio="+$("#filterFio").val()
+				+"&email="+$("#filterEmail").val()
+				+"&diplom="+$("#filterDiplom").val();
+			</c:if>
+			<c:if test="${isPageForBlocking==true}">
+			console.log("filterClearUser");
+			//alert($("#filterFio").val()+$("#filterEmail").val()+$("#filterDiplom").val());
+			window.location.href="cleanUser?page="+currentPage
+					+"&fio="+$("#filterFio").val()
+					+"&email="+$("#filterEmail").val()
+					+"&diplom="+$("#filterDiplom").val();	
+			</c:if>
+		}
+		
+		function nextPage(){
+			currentPage++;
+			filterUser();
+		}
+		function prevPage(){
+			if ((currentPage-1)>0){
+				currentPage--;
+				filterUser();
+			}
+		}
+		
+		function modifyUserMark(userId,markId){
+			console.log(userId+"|"+markId+"|val="+$("#"+userId+"_"+markId).val());
+			
 		}
 	</script>
 
-	<div class="jumbotron container theme-showcasejumbotron" role="main">
-		<c:if test="${ROLE=='ADMIN' && isPageForBlocking==true}">
-			<div class="jumbotron row">
-				<c:if test="${ROLE=='ADMIN'}">
-				Set Marks for group for group
-				mark type
-				key kolumn
-				value kolumn
-				submit
-				filter
-			</c:if>
-			</div>
-		</c:if>
+	<div class="jumbotron container theme-showcase" role="main">
 		<div class="jumbotron row">
 			<div class="jumbotron bs-example" data-example-id="simple-table">
+				<c:if test="${isPageForBlocking==true}">
+
+					<c:if test="${ROLE=='SUPERADMIN'}">
+						<div>Set Marks for group</div>
+
+						<select>
+							<option>mark1</option>
+							<option>mark2</option>
+							<option>mark3</option>
+						</select>
+
+						<!-- excelSetMarks POST -->
+						<form enctype="multipart/form-data">
+							<input type="file" name="file" size="50" onchange="checking()" />
+							<input type="submit" id="sendFile" style="display: inline-block;"
+								value='<tags:lang text="uploadFile"></tags:lang>' />
+						</form>
+					</c:if>
+				</c:if>
+				
+				<!-- filter -->
+				<div>
+					Fio<input type="text" id="filterFio" value="${filterFio}"> 
+					Email<input	type="text" id="filterEmail" value="${filterEmail}"> 
+					Diplom<input type="text" id="filterDiplom" value="${filterDiplom}">
+
+					<button onclick="filterUser()">
+						<tags:lang text="find"></tags:lang>
+					</button>
+				</div>
+				
 				<table class="table">
 					<thead>
 						<tr>
 							<th>#</th>
 							<th><tags:lang text="id"></tags:lang></th>
 							<th><tags:lang text="fio"></tags:lang></th>
-							<th><tags:lang text="userName"></tags:lang></th>
-							<th><tags:lang text="user2Name"></tags:lang></th>
 							<th><tags:lang text="email"></tags:lang></th>
 							<%--
 							<c:if test="${isPageForBlocking==true}">
@@ -61,7 +124,8 @@
 							 --%>
 							<th><tags:lang text="diplom"></tags:lang></th>
 							<th><tags:lang text="operation"></tags:lang></th>
-							<c:if test="${ROLE=='ADMIN' && isPageForBlocking==true}">
+							<c:if
+								test="${(ROLE=='ADMIN' ||ROLE=='SUPERADMIN') && isPageForBlocking==true}">
 								<th>Set Mark</th>
 							</c:if>
 						</tr>
@@ -72,11 +136,9 @@
 							<tr>
 								<th scope="row"></th>
 								<td>${user.id}</td>
-								<td>fio todo</td>
-								<td>${user.name}</td>
-								<td>${user.secondName}</td>
+								<td>${user.fio}</td>
 								<td>${user.email}</td>
-								<td>todo diplom</td>
+								<td>${user.diplom}</td>
 								<%--
 								<c:if test="${isPageForBlocking==true}">
 									<td>${user.departmentCount}</td>
@@ -97,11 +159,16 @@
 											</button>
 										</c:otherwise>
 									</c:choose></td>
-								<c:if test="${ROLE=='ADMIN' && isPageForBlocking==true}">
+								<c:if
+									test="${(ROLE=='ADMIN' ||ROLE=='SUPERADMIN') && isPageForBlocking==true}">
 									<th>
 										<ul>
-											<li>1</li>
-											<li>1</li>
+											<c:forEach var="mark" items="${user.studentMarks}">
+												<li>${mark.name}
+												<input type = "number" value="${mark.mark}" id="${user.id}_${mark.id}">
+												<button onclick="modifyUserMark(${user.id},${mark.id})"><tags:lang text="update"></tags:lang></button>
+												</li>
+											</c:forEach>
 										</ul>
 									</th>
 								</c:if>
@@ -110,6 +177,20 @@
 
 					</tbody>
 				</table>
+
+				<div>
+					<button style="display: inline-block;" onclick="prevPage()">
+						<tags:lang text="prevPage"></tags:lang>
+					</button>
+					<div style="display: inline-block;">
+						<tags:lang text="currPage"></tags:lang>
+						<label>${page}</label>
+					</div>
+					<button style="display: inline-block;" onclick="nextPage()">
+						<tags:lang text="nextPage"></tags:lang>
+					</button>
+				</div>
+
 			</div>
 		</div>
 	</div>

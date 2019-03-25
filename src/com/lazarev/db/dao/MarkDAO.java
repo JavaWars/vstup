@@ -20,6 +20,7 @@ public class MarkDAO extends DAO<Subject, Integer> {
 	private static final String CALL_INSERT_USER_DEPARTMEN = "call student_enter(?,?)";
 	private static final String CALL_INSERT_USER_MARK = "call student_mark_enter(?,?,?)";
 	private static final String SELECT_USER_MARK_BY_USER_ID = "SELECT `subject`.id, `subject`.`name`, student_mark.mark FROM student_mark INNER JOIN `subject` ON student_mark.id_subject = `subject`.id where student_mark.id_stud=?";
+	private static final String SELECT_USER_MARKS_WITH_NOT_WRITED_YET = "call AllUserMarks(?)";
 
 	@Override
 	public Subject get(Integer key) {
@@ -173,5 +174,35 @@ public class MarkDAO extends DAO<Subject, Integer> {
 			throw new MyAppException("something going wrong with db", e);
 		}
 		return sm;
+	}
+
+	public List<StudentMark> getAllMarksForUserWithId(int id) {
+		List <StudentMark> result=new LinkedList();
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = getPreparedStatement(null, SELECT_USER_MARKS_WITH_NOT_WRITED_YET);
+			preparedStatement.setInt(1, id);
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				StudentMark sm=new StudentMark();
+				sm.setId(resultSet.getInt("id"));
+				sm.setMark(resultSet.getDouble("userMark"));
+				sm.setName(resultSet.getString("name"));
+				result.add(sm);
+			}
+
+		} catch (SQLException e) {
+			LOGGER.error("can't get all users", e);
+			throw new MyAppException("something going wrong with db", e);
+		} finally {
+			close(preparedStatement);
+			close(resultSet);
+			close(connection);
+		}
+		
+		return result;
 	}
 }

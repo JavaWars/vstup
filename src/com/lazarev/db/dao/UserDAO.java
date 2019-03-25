@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.lazarev.db.entity.StudentMark;
 import com.lazarev.db.entity.User;
 import com.lazarev.exception.MyAppException;
 
@@ -22,15 +23,19 @@ public class UserDAO extends DAO<User, Integer> {
 
 	private static final String INSERT_INTO_USER = "insert into users values( DEFAULT ,?,?, ?, ?, ?, ?, ?,?,?, ?);";
 
-	private static final String SELECT_ALL_BANNED_USERS = "SELECT users.id, users.`name`, users.secondName, users.email, users.`password`, users.id_role, users.id_city, users.area"
-			+ " FROM ban INNER JOIN users ON ban.userId = users.id";
+	private static final String SELECT_ALL_BANNED_USERS = "SELECT users.*"
+			+ " FROM ban INNER JOIN users ON ban.userId = users.id and "
+			+ "users.fio like ? and users.email like ? and users.diplom like ?\r\n"
+			+"limit ?,?";
 
 	private static final String INSERT_BAN_USER = "insert into ban values(?)";
 
 	private static final String DELETE_BAN_USER = "delete from ban where userId=?";
 
 	private static final String SELECT_ALL_USERS_NOT_BANNED = "select users.* from users, roles"
-			+ " where (not users.id=any (select userId from ban)) and (roles.id=users.id_role) and (roles.roleName='USER')";
+			+ " where (not users.id=any (select userId from ban)) and (roles.id=users.id_role) and (roles.roleName='USER') and "
+			+ "users.fio like ? and users.email like ? and users.diplom like ?\r\n"
+			+"limit ?,?";
 
 	private static final String SELECT_IS_BLOCKED = "SELECT users.* FROM ban INNER JOIN users ON ban.userId = users.id where users.email=?";
 
@@ -179,14 +184,20 @@ public class UserDAO extends DAO<User, Integer> {
 		return false;
 	}
 
-	public List<User> getAllBanned() {
+	public List<User> getAllBanned(String fio, String email, String diplom, int start, int fin) {
 		logger.trace("UserDAO#getAllBannedUsers()");
 		List<User> result = new LinkedList<>();
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
+			int k=1;
 			preparedStatement = getPreparedStatement(null, SELECT_ALL_BANNED_USERS);
+			preparedStatement.setString(k++, '%'+fio+'%');
+			preparedStatement.setString(k++, '%'+email+'%');
+			preparedStatement.setString(k++, '%'+diplom+'%');
+			preparedStatement.setInt(k++, start);
+			preparedStatement.setInt(k++, fin);
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
@@ -252,15 +263,21 @@ public class UserDAO extends DAO<User, Integer> {
 		}
 	}
 
-	public List<User> getAllNotBanned() {
-		logger.trace("UserDAO#getAllUsers()");
+	public List<User> getAllNotBanned(String fio, String email, String diplom, int start, int fin) {
+		logger.trace("UserDAO#getAllUsers()"+"f="+fio+"|diplom="+diplom+"|email="+email+"|start="+start+"|fin="+fin);
 		List<User> result = new LinkedList<>();
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
+			int k=1;
 			preparedStatement = getPreparedStatement(null, SELECT_ALL_USERS_NOT_BANNED);
-
+			preparedStatement.setString(k++, '%'+fio+'%');
+			preparedStatement.setString(k++, '%'+email+'%');
+			preparedStatement.setString(k++, '%'+diplom+'%');
+			preparedStatement.setInt(k++, start);
+			preparedStatement.setInt(k++, fin);
+			
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
@@ -334,39 +351,6 @@ public class UserDAO extends DAO<User, Integer> {
 		return result;
 	}
 
-	///////////////////////////////////////
-	// preparators
-	private User prepareUser(ResultSet resultSet) {
-		User user = new User();
-
-		try {
-			user.setId(resultSet.getInt("id"));
-			user.setEmail(resultSet.getString("email"));
-			user.setPassword(resultSet.getString("password"));
-			user.setName(resultSet.getString("name"));
-			user.setSecondName(resultSet.getString("secondName"));
-			user.setCityArea(resultSet.getString("area"));
-			user.setCityId(resultSet.getInt("id_city"));
-			user.setRoleId(resultSet.getInt("id_role"));
-		} catch (SQLException e) {
-			logger.error("can't prepare user", e);
-			throw new MyAppException("something going wrong with db", e);
-		}
-
-		return user;
-	}
-
-	private void updateUserData(User user, User data) {
-		user.setId(data.getId());
-		user.setEmail(data.getEmail());
-		user.setPassword(data.getPassword());
-		user.setName(data.getName());
-		user.setSecondName(data.getSecondName());
-		user.setCityArea(data.getCityArea());
-		user.setCityId(data.getCityId());
-		user.setRoleId(data.getRoleId());
-	}
-
 	public boolean exist(String email) {
 		logger.debug("checking existing user by email" + email);
 
@@ -394,4 +378,40 @@ public class UserDAO extends DAO<User, Integer> {
 		}
 		return false;
 	}
-}
+
+	
+	///////////////////////////////////////
+	// preparators
+	private User prepareUser(ResultSet resultSet) {
+		User user = new User();
+
+		try {
+			user.setId(resultSet.getInt("id"));
+			user.setEmail(resultSet.getString("email"));
+			user.setPassword(resultSet.getString("password"));
+			user.setFio(resultSet.getString("fio"));
+			user.setDiplom(resultSet.getString("diplom"));
+			user.setCityArea(resultSet.getString("area"));
+			user.setCityId(resultSet.getInt("id_city"));
+			user.setRoleId(resultSet.getInt("id_role"));
+			user.setBirthday(resultSet.getDate("birthday"));
+		} catch (SQLException e) {
+			logger.error("can't prepare user", e);
+			throw new MyAppException("something going wrong with db", e);
+		}
+
+		return user;
+	}
+
+	private void updateUserData(User user, User data) {
+		user.setId(data.getId());
+		user.setEmail(data.getEmail());
+		user.setPassword(data.getPassword());
+		user.setName(data.getName());
+		user.setSecondName(data.getSecondName());
+		user.setCityArea(data.getCityArea());
+		user.setCityId(data.getCityId());
+		user.setRoleId(data.getRoleId());
+	}
+
+	}
