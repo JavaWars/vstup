@@ -23,4 +23,8 @@ public class MarkService {
 		}
 	}
 
+	public void insertMarkForStudent(int userId, int subjectId, double mark) {
+		new MarkDAO().insertUserMark(userId,subjectId,mark);
+	}
+
 }

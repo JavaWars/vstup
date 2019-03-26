@@ -18,6 +18,7 @@ import com.lazarev.db.entity.Department;
 import com.lazarev.db.entity.StudentMark;
 import com.lazarev.exception.MyAppException;
 import com.lazarev.service.MarkService;
+import com.lazarev.service.UserService;
 import com.lazarev.web.Constants;
 import com.lazarev.web.json.JsonExtracter;
 import com.lazarev.web.servlets.helper.Helper;
@@ -38,6 +39,7 @@ public class UserMark extends HttpServlet {
 			List<StudentMark> subjects = new MarkDAO().getAll(id);
 			request.setAttribute("subjects", subjects);
 			request.setAttribute("file", ImgConverter.fileNameTo64BaseData(String.valueOf(id)));
+			request.setAttribute("profile", new UserService().getUserById(id));
 			request.getRequestDispatcher(Constants.PAGE_USER_PROFILE).forward(request, response);
 		}
 	}
@@ -52,7 +54,7 @@ public class UserMark extends HttpServlet {
 		String userLogin = (String) request.getSession().getAttribute("EMAIL");
 
 		try {
-		new MarkService().insertUserMark(userLogin, department, marks);
+			new MarkService().insertUserMark(userLogin, department, marks);
 		}
 		catch (MyAppException e) {
 			LOGGER.error(e.getMessage());
@@ -60,5 +62,12 @@ public class UserMark extends HttpServlet {
 			response.setStatus(500);
 		}
 	}
+	
+//	@Override
+//	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//	
+//		req.getAttribute("fio");
+//		req.getAttribute("diplom");
+//	}
 
 }

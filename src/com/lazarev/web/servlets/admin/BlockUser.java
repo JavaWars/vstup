@@ -27,6 +27,8 @@ public class BlockUser extends HttpServlet {
 			new UserDAO().banUser(userId);
 			LOGGER.trace("admin want ban user" + userId);
 		}
+		
+		
 
 	}
 

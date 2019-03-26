@@ -32,7 +32,6 @@ public class EditDepartment extends HttpServlet {
 		LOGGER.trace("id="+id);
 		req.setAttribute("id", id);
 		req.getRequestDispatcher(Constants.PAGE_ADMIN_CREATE_NEW_DEPARTMENT).forward(req, resp);
-
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

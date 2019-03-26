@@ -73,6 +73,23 @@
 		function modifyUserMark(userId,markId){
 			console.log(userId+"|"+markId+"|val="+$("#"+userId+"_"+markId).val());
 			
+			var datamodel = {
+		            userId : userId,
+		            subjectId : markId,
+		            mark : $("#"+userId+"_"+markId).val()
+		         };
+		         $.ajax({
+		            type : "POST",
+		            url : "InsertMarkForStudent",
+		            data : datamodel,
+		            success : function(data) {
+		               alert("ok"+data);
+		            },
+		            error : function(data) {
+		            	alert("error"+data);
+		            }
+		            }
+		         });
 		}
 	</script>
 

@@ -21,6 +21,7 @@ public class MarkDAO extends DAO<Subject, Integer> {
 	private static final String CALL_INSERT_USER_MARK = "call student_mark_enter(?,?,?)";
 	private static final String SELECT_USER_MARK_BY_USER_ID = "SELECT `subject`.id, `subject`.`name`, student_mark.mark FROM student_mark INNER JOIN `subject` ON student_mark.id_subject = `subject`.id where student_mark.id_stud=?";
 	private static final String SELECT_USER_MARKS_WITH_NOT_WRITED_YET = "call AllUserMarks(?)";
+	private static final String INSERT_CONFIRMED_USER_MARK = "call insert_confirmed_user_mark(?,?,?)";
 
 	@Override
 	public Subject get(Integer key) {
@@ -98,11 +99,11 @@ public class MarkDAO extends DAO<Subject, Integer> {
 	}
 
 	private boolean insertUserMark(int userId, StudentMark studentMark) {
-		LOGGER.debug("inserting user mark for deparment "+userId+" studentMark "+studentMark);
+		LOGGER.debug("inserting user mark for deparment " + userId + " studentMark " + studentMark);
 		boolean result = true;
 		PreparedStatement preparedStatement = getPreparedStatement(connection, CALL_INSERT_USER_MARK);
 		try {
-			System.out.println(userId+"|"+studentMark.getId()+"|"+studentMark.getMark());
+			System.out.println(userId + "|" + studentMark.getId() + "|" + studentMark.getMark());
 			preparedStatement.setInt(1, userId);
 			preparedStatement.setInt(2, studentMark.getId());
 			preparedStatement.setDouble(3, studentMark.getMark());
@@ -177,7 +178,7 @@ public class MarkDAO extends DAO<Subject, Integer> {
 	}
 
 	public List<StudentMark> getAllMarksForUserWithId(int id) {
-		List <StudentMark> result=new LinkedList();
+		List<StudentMark> result = new LinkedList();
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -187,7 +188,7 @@ public class MarkDAO extends DAO<Subject, Integer> {
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-				StudentMark sm=new StudentMark();
+				StudentMark sm = new StudentMark();
 				sm.setId(resultSet.getInt("id"));
 				sm.setMark(resultSet.getDouble("userMark"));
 				sm.setName(resultSet.getString("name"));
@@ -202,7 +203,27 @@ public class MarkDAO extends DAO<Subject, Integer> {
 			close(resultSet);
 			close(connection);
 		}
-		
+
 		return result;
+	}
+
+	public void insertUserMark(int userId, int subjectId, double mark) {
+		LOGGER.debug("inserting user mark for deparment " + userId + " studentMark " + mark+" subjectId " +subjectId);
+		
+		PreparedStatement preparedStatement = getPreparedStatement(connection, INSERT_CONFIRMED_USER_MARK);
+		try {
+			preparedStatement.setInt(1, userId);
+			preparedStatement.setInt(2, subjectId);
+			preparedStatement.setDouble(3, mark);
+			int x = preparedStatement.executeUpdate();
+			
+		} catch (SQLException e) {
+			LOGGER.error("can not enter user mark for this university department", e);
+			throw new MyAppException("something going wrong with db", e);
+		} finally {
+			close(preparedStatement);
+			close(connection);
+		}
+
 	}
 }

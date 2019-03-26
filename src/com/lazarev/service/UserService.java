@@ -82,4 +82,18 @@ public class UserService {
 
 		return new UserDAO().getAllBanned(fio, email, diplom, start, fin);
 	}
+
+	public User getUserById(int id) {
+		return new UserDAO().get(id);
+	}
+
+	public void updateUserData(String email, String fio, String diplom) {
+		
+		int userId=new UserDAO().getIdByEmail(email);
+		User u=new User();
+		u.setId(userId);
+		u.setFio(fio);
+		u.setDiplom(diplom);
+		new UserDAO().update(u);
+	}
 }

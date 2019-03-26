@@ -43,9 +43,37 @@ public class UserDAO extends DAO<User, Integer> {
 
 	private static final String SELECT_COUNT_FOR_USER = "SELECT COUNT(1) FROM student_department where id_student=?";
 
+	private static final String SELECT_USER_BY_ID = "select * from users where users.id=?";
+
+	private static final String UPDATE_USER_FIO_DIPLOM_BY_ID = "update users set users.diplom=?, users.fio=?,users.name=?,users.secondName=? where users.id=?";
+
 	@Override
 	public User get(Integer key) {
-		return null;
+		User result=new User();
+		
+		prepareConnectionToWork(connection);
+		PreparedStatement prepared = getPreparedStatement(connection, SELECT_USER_BY_ID);
+		ResultSet set = null;
+
+		try {
+			int k = 1;
+			prepared.setInt(k++, key);
+
+			set = prepared.executeQuery();
+
+			if (set.next()) {
+				result = prepareUser(set);
+			}
+
+		} catch (SQLException e) {
+			logger.error("can't get result from table user by query " + SELECT_USER_BY_ID, e);
+			throw new MyAppException("Something going wrong");
+		} finally {
+			close(prepared);
+			close(set);
+			close(connection);
+		}		
+		return result;
 	}
 
 	// only user, not admin
@@ -82,7 +110,27 @@ public class UserDAO extends DAO<User, Integer> {
 
 	@Override
 	public boolean update(User entity) {
-		return false;
+		
+		PreparedStatement prepared = getPreparedStatement(connection, UPDATE_USER_FIO_DIPLOM_BY_ID);
+		logger.trace("update user" + entity);
+		try {
+			int k = 1;
+			prepared.setString(k++, entity.getDiplom());
+			prepared.setString(k++, entity.getFio());
+			prepared.setString(k++, entity.getName());
+			prepared.setString(k++, entity.getSecondName());
+			prepared.setInt(k++, entity.getId());
+			prepared.executeUpdate();
+		} catch (SQLException e) {
+			logger.error("cannot insert new user", e);
+			throw new MyAppException("something going wrong with db", e);
+		} finally {
+			close(prepared);
+			close(connection);
+		}
+		
+		
+		return true;
 	}
 
 	@Override

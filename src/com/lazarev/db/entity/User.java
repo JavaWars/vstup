@@ -128,7 +128,7 @@ public class User extends Base {
 			Pattern pattern = Pattern.compile(regex);
 			Matcher matcher = pattern.matcher(diplom);
 			if (!matcher.matches()) {
-				throw new MyAppException("Diplom is invalid");
+				//throw new MyAppException("Diplom is invalid");
 			}
 			this.diplom = diplom;
 		}
