@@ -33,6 +33,8 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 	private static final String SELECT_ALL_SUBJECT_BY_NAME = "SELECT `subject`.`name` FROM `subject` where `subject`.`name` like ?";
 
+	private static final String SELECT_ALL_MARKS_SET_BY_UNIVERSITY = "call getUniversityMark()";
+
 	@Override
 	public Subject get(Integer key) {
 		Subject subject = new Subject();
@@ -271,6 +273,36 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 		return result;
 	}
 
+	public List<Subject> getMarksSetedByAdmin() {
+		LOGGER.trace("searching mark for seted by university admins");
+		List<Subject> result = new LinkedList<>();
+
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = getPreparedStatement(null, SELECT_ALL_MARKS_SET_BY_UNIVERSITY);
+			
+			resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				Subject s=new Subject();
+				s.setId(resultSet.getInt("id"));
+				s.setName(resultSet.getString("name"));
+				result.add(s);
+			}
+
+		} catch (SQLException e) {
+			LOGGER.error("can not get marks seted by university", e);
+			throw new MyAppException("something going wrong with db", e);
+		} finally {
+			close(preparedStatement);
+			close(resultSet);
+			close(connection);
+		}
+		return result;
+		
+	}
+	
 	///////////////////////////////////////////////
 	// prepare
 
@@ -304,4 +336,6 @@ public class SubjectDAO extends DAO<Subject, Integer> {
 
 		return subject;
 	}
+
+	
 }

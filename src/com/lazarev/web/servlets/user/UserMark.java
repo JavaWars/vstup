@@ -62,12 +62,4 @@ public class UserMark extends HttpServlet {
 			response.setStatus(500);
 		}
 	}
-	
-//	@Override
-//	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//	
-//		req.getAttribute("fio");
-//		req.getAttribute("diplom");
-//	}
-
 }

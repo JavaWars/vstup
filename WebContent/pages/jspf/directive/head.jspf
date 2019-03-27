@@ -38,6 +38,8 @@ as you set them in a page directive.
 <!-- END BOOTSTRAP -->
 
 <!--  JQUERY -->
-<script type="text/javascript"
-	src="pages/lib/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="pages/lib/jquery-3.2.1.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+
 </head>

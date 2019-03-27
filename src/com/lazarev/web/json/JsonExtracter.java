@@ -1,5 +1,6 @@
 package com.lazarev.web.json;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -53,5 +54,21 @@ public class JsonExtracter {
 			studentMark.setMark(arr.getJSONObject(i).getJSONObject("mark").getDouble("userMark"));
 			marks.add(studentMark);
 		}
+	}
+
+	public static List<Department> extractDepartmnetPriorityList(String jsonQuery) {
+		LOGGER.debug("extract priority list from user"+jsonQuery);
+		
+		List<Department> result=new LinkedList();
+		
+		JSONObject root = new JSONObject(jsonQuery);
+		JSONArray arr = root.getJSONArray("order");
+		for (int i = 0; i < arr.length(); i++) {
+			Department d=new Department();
+			d.setId(arr.getInt(i));
+			result.add(d);
+		}
+		
+		return result;
 	}
 }

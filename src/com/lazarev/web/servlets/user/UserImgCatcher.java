@@ -18,6 +18,9 @@ import javax.servlet.http.Part;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.dao.UserDAO;
+import com.lazarev.db.entity.Phase;
+import com.lazarev.service.PhaseService;
+import com.lazarev.service.UserService;
 import com.lazarev.web.Constants;
 
 @WebServlet("/userImgCatcher")
@@ -31,26 +34,32 @@ public class UserImgCatcher extends HttpServlet {
 		LOGGER.debug("UserImgCatcher#doPost()");
 
 		String email = (String) request.getSession().getAttribute("EMAIL");
-		if (email != null) {
-			int id = new UserDAO().getIdByEmail(email);
+		if (PhaseService.getCurrentPhase() != Phase.DOCUMENT_SERVE) {
+			response.getWriter().append("Wrong phase");
+			response.setStatus(500);
+		} else {
+			
+			if (email != null) {
+				
+				
+				int id = new UserDAO().getIdByEmail(email);
 
-			// String description = request.getParameter("file"); // Retrieves
-			// <input type="text" name="description">
-			Part filePart = request.getPart("file"); // Retrieves <input
-														// type="file"
-														// name="file">
-			//String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-			InputStream fileContent = filePart.getInputStream();
+				Part filePart = request.getPart("file"); // Retrieves <input
+															// type="file"
+															// name="file">
+				InputStream fileContent = filePart.getInputStream();
 
-			byte[] buffer = new byte[fileContent.available()];
-			fileContent.read(buffer);
+				byte[] buffer = new byte[fileContent.available()];
+				fileContent.read(buffer);
 
-			File targetFile = new File(Constants.IMG_HOME + String.valueOf(id));
-			OutputStream outStream = new FileOutputStream(targetFile);
-			outStream.write(buffer);
-			outStream.flush();
-			outStream.close();
+				File targetFile = new File(Constants.IMG_HOME + String.valueOf(id));
+				OutputStream outStream = new FileOutputStream(targetFile);
+				outStream.write(buffer);
+				outStream.flush();
+				outStream.close();
+				new UserService().invalidateUser(id);
+			}
+			response.sendRedirect(Constants.COMMAND_HOME);
 		}
-		response.sendRedirect(Constants.COMMAND_HOME);
 	}
 }

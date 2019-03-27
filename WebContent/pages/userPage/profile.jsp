@@ -33,8 +33,8 @@
 	            success : function(data) {
 	               alert("ok");
 	            },
-	            error : function(data) {
-	            	alert("error"+data);
+	            error : function(xhr, ajaxOptions, thrownErro) {
+	            	alert("error "+xhr.responseText);
 	            }
 	         });
 	}
@@ -77,7 +77,7 @@
 				<input id="userPersonalFio" value="${profile.fio}">
 				<tags:lang text="diplom"></tags:lang>
 				<input id="userPersonalDiplom" value="${profile.diplom}" pattern="[a-zA-Z]{2}[0-9]{8}">
-				<button onclick="updateUserMainData()">
+				<button onclick="updateUserMainData()" class ="button btn-warning">
 					<tags:lang text="update"></tags:lang>
 				</button>
 			</div>
@@ -87,7 +87,7 @@
 			<form action="userImgCatcher" method="post"
 				enctype="multipart/form-data">
 				<input type="file" name="file" size="50" onchange="checking()" /> <br />
-				<input type="submit" id="sendFile"
+				<input type="submit" id="sendFile" class ="button btn-warning"
 					value='<tags:lang text="uploadFile"></tags:lang>' />
 			</form>
 

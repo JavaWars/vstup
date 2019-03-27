@@ -22,7 +22,7 @@
 					<option value="ru"><tags:lang text="russian"></tags:lang></option>
 					<option value="en"><tags:lang text="english"></tags:lang></option>
 					<option value="ua"><tags:lang text="ukrainian"></tags:lang></option>
-				</select> <input type="submit" value="ok" />
+				</select> <input type="submit" value="ok" class="button btn-success"/>
 			</form>
 		</div>
 	</div>

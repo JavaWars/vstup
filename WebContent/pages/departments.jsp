@@ -56,7 +56,8 @@
 					<option value="name z-a">name z-a</option>
 					<option value="total<">places total min to max</option>
 					<option value="gov<">places gov min to max</option>
-				</select> <input type="submit" value="<tags:lang text="filter"></tags:lang>" />
+				</select> <input type="submit" class="btn btn-primary "
+					value="<tags:lang text="filter"></tags:lang>" />
 			</form>
 
 			<!-- FILTER AND SORTER FIN -->
@@ -78,35 +79,28 @@
 							<td>${dep.placeGov}</td>
 							<td>${dep.totaPlace}</td>
 							<td><c:choose>
-									<c:when test="${ROLE=='ADMIN'}">
-										<button type="button" class="btn btn-primary "
-											onclick="go('departmentRating',${dep.id})">
-											<tags:lang text="documentation"></tags:lang>
-										</button>
-
-									</c:when>
 									<c:when test="${ROLE=='SUPERADMIN'}">
-										<button type="button" class="btn btn-primary "
+										<button type="button" class="btn btn-danger"
 											onclick="deleteDepartment('delDepartment',${dep.id})">
 											<tags:lang text="delete"></tags:lang>
 										</button>
-										<button type="button" class="btn btn-primary "
+										<button type="button" class="btn btn-warning"
 											onclick="go('editDepartment',${dep.id})">
 											<tags:lang text="edit"></tags:lang>
-										</button>
-										<button type="button" class="btn btn-primary "
-											onclick="go('departmentRating',${dep.id})">
-											<tags:lang text="documentation"></tags:lang>
 										</button>
 
 									</c:when>
 									<c:when test="${ROLE=='USER'}">
-										<button type="button" class="btn btn-primary "
+										<button type="button" class="btn btn-success"
 											onclick="go('enter',${dep.id})">
 											<tags:lang text="enter"></tags:lang>
 										</button>
 									</c:when>
-								</c:choose></td>
+								</c:choose> <!-- for all user -->
+								<button type="button" class="btn btn-primary "
+									onclick="go('departmentRating',${dep.id})">
+									<tags:lang text="rating"></tags:lang>
+								</button></td>
 						</tr>
 					</c:forEach>
 

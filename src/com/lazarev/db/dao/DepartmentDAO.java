@@ -24,6 +24,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 	private static final String UPDATE_DEPARTMENT = "UPDATE departments SET name = ?, place_government=?, place_total=? where id=?";
 	private static final String SELECT_DEPARTMENT_BY_ID = "select * from departments where id=?";
 	private static final String SELECT_ALL_DEPARTMENT_WITH_NAME = "select * from departments where name like ?";
+	private static final String UPDATE_PRIORITY = "update student_department set priority=? where id_student=? and id_department=?";
 
 	@Override
 	public Department get(Integer key) {
@@ -38,8 +39,7 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 
 			if (resultSet.next()) {
 				setDepartment(resultSet, result);
-			}
-			else{
+			} else {
 				throw new MyAppException("can't find department");
 			}
 
@@ -262,6 +262,48 @@ public class DepartmentDAO extends DAO<Department, Integer> {
 		}
 		return result;
 
+	}
+
+	public void updateUserPriorityList(int userId, List<Department> priorityList) {
+
+		LOGGER.trace("update user priority list");
+
+		prepareConnectionToWork(connection);
+		try {
+			connection.setAutoCommit(false);
+			connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+
+			int i = 0;
+			boolean ok = true;
+			for (Department d : priorityList) {
+				i++;
+
+				PreparedStatement preparedStatement = null;
+				try {
+					preparedStatement = getPreparedStatement(null, UPDATE_PRIORITY);
+					int k = 1;
+					preparedStatement.setInt(k++, i);
+					preparedStatement.setInt(k++, userId);
+					preparedStatement.setInt(k++, d.getId());
+					preparedStatement.executeUpdate();
+				} catch (Exception e) {
+					LOGGER.trace("update user priority list erroe" + e);
+					rollback(connection);
+					ok = false;
+					break;
+				}
+			}
+
+			if (ok)
+				connection.commit();
+
+		} catch (SQLException e) {
+			rollback(connection);
+			LOGGER.error("can not insert new department", e);
+			throw new MyAppException("something going wrong with db", e);
+		} finally {
+			close(connection);
+		}
 	}
 
 	/////////////////////////////////////////////////////

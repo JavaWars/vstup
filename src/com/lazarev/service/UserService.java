@@ -59,15 +59,15 @@ public class UserService {
 		int start = (page - 1) * count_per_page;
 		int fin = page * count_per_page;
 
-		List <User> listOfUser=new UserDAO().getAllNotBanned(fio, email, diplom, start, fin);
-		List<UserWithMarks> result=new LinkedList();
-		
-		for (User u:listOfUser) {
-			UserWithMarks uwm=new UserWithMarks(u);
+		List<User> listOfUser = new UserDAO().getAllNotBanned(fio, email, diplom, start, fin);
+		List<UserWithMarks> result = new LinkedList();
+
+		for (User u : listOfUser) {
+			UserWithMarks uwm = new UserWithMarks(u);
 			uwm.setStudentMarks(new MarkDAO().getAllMarksForUserWithId(u.getId()));
 			result.add(uwm);
 		}
-		
+
 		return result;
 	}
 
@@ -88,12 +88,21 @@ public class UserService {
 	}
 
 	public void updateUserData(String email, String fio, String diplom) {
-		
-		int userId=new UserDAO().getIdByEmail(email);
-		User u=new User();
+
+		int userId = new UserDAO().getIdByEmail(email);
+		User u = new User();
 		u.setId(userId);
 		u.setFio(fio);
 		u.setDiplom(diplom);
 		new UserDAO().update(u);
+		invalidateUser(u.getId());
+	}
+
+	public void invalidateUser(int userId) {
+		new UserDAO().invalidateUserMarks(userId);		
+	}
+
+	public int getUserByEmail(String userEmail) {
+		return new UserDAO().getIdByEmail(userEmail);
 	}
 }

@@ -13,8 +13,14 @@ import org.apache.log4j.Logger;
 
 import com.lazarev.db.dao.UserDAO;
 import com.lazarev.db.dao.UserPositionDAO;
+import com.lazarev.db.entity.Department;
+import com.lazarev.db.entity.Phase;
 import com.lazarev.db.entity.extra.UserPosition;
+import com.lazarev.service.DepartmentService;
+import com.lazarev.service.PhaseService;
 import com.lazarev.web.Constants;
+import com.lazarev.web.json.JsonExtracter;
+import com.lazarev.web.servlets.helper.Helper;
 
 @WebServlet("/userStat")
 public class UserStat extends HttpServlet {
@@ -33,5 +39,19 @@ public class UserStat extends HttpServlet {
 			request.getRequestDispatcher(Constants.PAGE_USER_STAT).forward(request, response);
 		}
 	}
+	
+	@Override
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	
+		if (PhaseService.getCurrentPhase()==Phase.DOCUMENT_SERVE) {
+			List<Department> priorityList = JsonExtracter.extractDepartmnetPriorityList(Helper.getJsonQuery(req));
+			new DepartmentService().updateUserPriorityList((String) req.getSession().getAttribute("EMAIL"),priorityList);
+		}
+		else {
+			resp.getWriter().append("Wrong Phase to change priority");
+			resp.setStatus(500);
+		}
+	}
+	
 
 }

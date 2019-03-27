@@ -22,6 +22,7 @@ public class MarkDAO extends DAO<Subject, Integer> {
 	private static final String SELECT_USER_MARK_BY_USER_ID = "SELECT `subject`.id, `subject`.`name`, student_mark.mark FROM student_mark INNER JOIN `subject` ON student_mark.id_subject = `subject`.id where student_mark.id_stud=?";
 	private static final String SELECT_USER_MARKS_WITH_NOT_WRITED_YET = "call AllUserMarks(?)";
 	private static final String INSERT_CONFIRMED_USER_MARK = "call insert_confirmed_user_mark(?,?,?)";
+	private static final String INSERT_ROW_FOR_CHECKING_BY_ADMIN = "call insertToCheckingQuery(?,?)";
 
 	@Override
 	public Subject get(Integer key) {
@@ -208,15 +209,16 @@ public class MarkDAO extends DAO<Subject, Integer> {
 	}
 
 	public void insertUserMark(int userId, int subjectId, double mark) {
-		LOGGER.debug("inserting user mark for deparment " + userId + " studentMark " + mark+" subjectId " +subjectId);
-		
+		LOGGER.debug(
+				"inserting user mark for deparment " + userId + " studentMark " + mark + " subjectId " + subjectId);
+
 		PreparedStatement preparedStatement = getPreparedStatement(connection, INSERT_CONFIRMED_USER_MARK);
 		try {
 			preparedStatement.setInt(1, userId);
 			preparedStatement.setInt(2, subjectId);
 			preparedStatement.setDouble(3, mark);
 			int x = preparedStatement.executeUpdate();
-			
+
 		} catch (SQLException e) {
 			LOGGER.error("can not enter user mark for this university department", e);
 			throw new MyAppException("something going wrong with db", e);
@@ -225,5 +227,25 @@ public class MarkDAO extends DAO<Subject, Integer> {
 			close(connection);
 		}
 
+	}
+
+	public boolean insertQueryToCheckByAdmin(StudentMark mark, int userId) {
+		boolean result = false;
+		LOGGER.debug("inserting fro checking mark " + userId + " Marks " + mark);
+
+		PreparedStatement preparedStatement = getPreparedStatement(connection, INSERT_ROW_FOR_CHECKING_BY_ADMIN);
+		try {
+			preparedStatement.setInt(1, userId);
+			preparedStatement.setInt(2, mark.getId());
+			preparedStatement.executeUpdate();
+			result = true;
+		} catch (SQLException e) {
+			LOGGER.error("can not insert mark for checking STATE FOR USER CAN BE INCORRRECT", e);
+			throw new MyAppException("something going wrong with db", e);
+		} finally {
+			close(preparedStatement);
+			close(connection);
+		}
+		return result;
 	}
 }

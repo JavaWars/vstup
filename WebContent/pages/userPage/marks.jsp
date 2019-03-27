@@ -29,6 +29,7 @@
 			insertMarkToList($(this).val(), $(this).attr('id'));
 			console.log($(this).attr('id'));//mark id
 			console.log($(this).val());//value from user (user mark)
+			if ($(this).val()>$(this).attr('max')){ok = false;alert("mark is bigger then possible")}
 			if (!checkTextField($(this).get()[0], $(this).attr('id')
 					+ 'Validation')) {
 				ok = false;
@@ -122,7 +123,7 @@
 									<tr>
 										<td>${mark.id}</td>
 										<td><p id="${mark.id}Validation">${mark.name}</p></td>
-										<td><input type="number" min="0" max="100" maxlength="3"
+										<td><input type="number" min="0" max="${mark.maxMark}" step="0.01" maxlength="3"
 											class="studentMark" id="${mark.id}" /></td>
 									</tr>
 								</c:if>
@@ -137,7 +138,7 @@
 				<div>
 					<!--MAIN BTN (user want set marks) -->
 
-					<button value="enter my marks" class="btn btn-success"
+					<button value="enter my marks" class="btn btn-success" type="submit"
 						onclick="enter()">
 						<tags:lang text="confirm"></tags:lang>
 					</button>

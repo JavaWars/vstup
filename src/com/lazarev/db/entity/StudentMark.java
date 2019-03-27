@@ -1,5 +1,9 @@
 package com.lazarev.db.entity;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import com.lazarev.exception.MyAppException;
 
 public class StudentMark extends Subject{
@@ -26,7 +30,8 @@ public class StudentMark extends Subject{
 		if (mark<0){
 			throw new MyAppException("incorrect input mark");
 		}
-		this.mark = mark;
+		BigDecimal bd = new BigDecimal(mark).setScale(2, RoundingMode.HALF_EVEN);
+		this.mark = bd.doubleValue();
 	}
 
 	@Override

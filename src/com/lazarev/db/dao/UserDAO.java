@@ -25,8 +25,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 	private static final String SELECT_ALL_BANNED_USERS = "SELECT users.*"
 			+ " FROM ban INNER JOIN users ON ban.userId = users.id and "
-			+ "users.fio like ? and users.email like ? and users.diplom like ?\r\n"
-			+"limit ?,?";
+			+ "users.fio like ? and users.email like ? and users.diplom like ?\r\n" + "limit ?,?";
 
 	private static final String INSERT_BAN_USER = "insert into ban values(?)";
 
@@ -34,8 +33,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 	private static final String SELECT_ALL_USERS_NOT_BANNED = "select users.* from users, roles"
 			+ " where (not users.id=any (select userId from ban)) and (roles.id=users.id_role) and (roles.roleName='USER') and "
-			+ "users.fio like ? and users.email like ? and users.diplom like ?\r\n"
-			+"limit ?,?";
+			+ "users.fio like ? and users.email like ? and users.diplom like ?\r\n" + "limit ?,?";
 
 	private static final String SELECT_IS_BLOCKED = "SELECT users.* FROM ban INNER JOIN users ON ban.userId = users.id where users.email=?";
 
@@ -47,10 +45,12 @@ public class UserDAO extends DAO<User, Integer> {
 
 	private static final String UPDATE_USER_FIO_DIPLOM_BY_ID = "update users set users.diplom=?, users.fio=?,users.name=?,users.secondName=? where users.id=?";
 
+	private static final String INVALIDATE_USER = "call invalidateUserMarks(?)";
+
 	@Override
 	public User get(Integer key) {
-		User result=new User();
-		
+		User result = new User();
+
 		prepareConnectionToWork(connection);
 		PreparedStatement prepared = getPreparedStatement(connection, SELECT_USER_BY_ID);
 		ResultSet set = null;
@@ -72,7 +72,7 @@ public class UserDAO extends DAO<User, Integer> {
 			close(prepared);
 			close(set);
 			close(connection);
-		}		
+		}
 		return result;
 	}
 
@@ -110,7 +110,7 @@ public class UserDAO extends DAO<User, Integer> {
 
 	@Override
 	public boolean update(User entity) {
-		
+
 		PreparedStatement prepared = getPreparedStatement(connection, UPDATE_USER_FIO_DIPLOM_BY_ID);
 		logger.trace("update user" + entity);
 		try {
@@ -128,14 +128,13 @@ public class UserDAO extends DAO<User, Integer> {
 			close(prepared);
 			close(connection);
 		}
-		
-		
+
 		return true;
 	}
 
 	@Override
 	public boolean insert(User entity) {
-		//todo update fio and diplom
+		// todo update fio and diplom
 
 		boolean inserted = false;
 
@@ -153,7 +152,7 @@ public class UserDAO extends DAO<User, Integer> {
 			prepared.setInt(k++, entity.getCityId());
 
 			prepared.setString(k++, entity.getCityArea());
-			
+
 			prepared.setString(k++, entity.getDiplom());
 			prepared.setDate(k++, entity.getBirthday());
 			logger.debug("insert user" + prepared.executeUpdate());
@@ -239,11 +238,11 @@ public class UserDAO extends DAO<User, Integer> {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			int k=1;
+			int k = 1;
 			preparedStatement = getPreparedStatement(null, SELECT_ALL_BANNED_USERS);
-			preparedStatement.setString(k++, '%'+fio+'%');
-			preparedStatement.setString(k++, '%'+email+'%');
-			preparedStatement.setString(k++, '%'+diplom+'%');
+			preparedStatement.setString(k++, '%' + fio + '%');
+			preparedStatement.setString(k++, '%' + email + '%');
+			preparedStatement.setString(k++, '%' + diplom + '%');
 			preparedStatement.setInt(k++, start);
 			preparedStatement.setInt(k++, fin);
 			resultSet = preparedStatement.executeQuery();
@@ -312,25 +311,26 @@ public class UserDAO extends DAO<User, Integer> {
 	}
 
 	public List<User> getAllNotBanned(String fio, String email, String diplom, int start, int fin) {
-		logger.trace("UserDAO#getAllUsers()"+"f="+fio+"|diplom="+diplom+"|email="+email+"|start="+start+"|fin="+fin);
+		logger.trace("UserDAO#getAllUsers()" + "f=" + fio + "|diplom=" + diplom + "|email=" + email + "|start=" + start
+				+ "|fin=" + fin);
 		List<User> result = new LinkedList<>();
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
-			int k=1;
+			int k = 1;
 			preparedStatement = getPreparedStatement(null, SELECT_ALL_USERS_NOT_BANNED);
-			preparedStatement.setString(k++, '%'+fio+'%');
-			preparedStatement.setString(k++, '%'+email+'%');
-			preparedStatement.setString(k++, '%'+diplom+'%');
+			preparedStatement.setString(k++, '%' + fio + '%');
+			preparedStatement.setString(k++, '%' + email + '%');
+			preparedStatement.setString(k++, '%' + diplom + '%');
 			preparedStatement.setInt(k++, start);
 			preparedStatement.setInt(k++, fin);
-			
+
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-				User user=prepareUser(resultSet);
-				int count=new UserDAO().getDepartmentCountForUser(user.getId());
+				User user = prepareUser(resultSet);
+				int count = new UserDAO().getDepartmentCountForUser(user.getId());
 				user.setDepartmentCount(count);
 				result.add(user);
 			}
@@ -348,8 +348,8 @@ public class UserDAO extends DAO<User, Integer> {
 
 	public int getDepartmentCountForUser(int id) {
 		logger.trace("UserDAO#getAllUsers()");
-		int result=0;
-		
+		int result = 0;
+
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		try {
@@ -358,7 +358,7 @@ public class UserDAO extends DAO<User, Integer> {
 			resultSet = preparedStatement.executeQuery();
 
 			if (resultSet.next()) {
-				result=resultSet.getInt(1);
+				result = resultSet.getInt(1);
 			}
 
 		} catch (SQLException e) {
@@ -413,7 +413,7 @@ public class UserDAO extends DAO<User, Integer> {
 			set = prepared.executeQuery();
 
 			if (set.next()) {
-				logger.info("user with given email "+email+" exist");
+				logger.info("user with given email " + email + " exist");
 				return true;
 			}
 
@@ -427,7 +427,24 @@ public class UserDAO extends DAO<User, Integer> {
 		return false;
 	}
 
-	
+	public void invalidateUserMarks(int userId) {
+		logger.debug("invalidation User marks for user id=" + userId);
+
+		PreparedStatement prepared = getPreparedStatement(connection, INVALIDATE_USER);
+
+		try {
+			int k = 1;
+			prepared.setInt(k++, userId);
+			prepared.executeQuery();
+		} catch (SQLException e) {
+			logger.error("user invalidation fail", e);
+			throw new MyAppException("Something going wrong");
+		} finally {
+			close(prepared);
+			close(connection);
+		}
+	}
+
 	///////////////////////////////////////
 	// preparators
 	private User prepareUser(ResultSet resultSet) {
@@ -462,4 +479,4 @@ public class UserDAO extends DAO<User, Integer> {
 		user.setRoleId(data.getRoleId());
 	}
 
-	}
+}

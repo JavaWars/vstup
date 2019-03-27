@@ -22,4 +22,14 @@ public class DepartmentService {
 		}
 	}
 
+	public List<Department> getAllDep() {
+		return new DepartmentDAO().getAll();
+	}
+
+	public void updateUserPriorityList(String userEmail, List<Department> priorityList) {
+		int userId=new UserService().getUserByEmail(userEmail);
+		
+		new DepartmentDAO().updateUserPriorityList(userId,priorityList);
+	}
+
 }

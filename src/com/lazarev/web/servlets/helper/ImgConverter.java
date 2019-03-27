@@ -1,5 +1,6 @@
 package com.lazarev.web.servlets.helper;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -24,5 +25,11 @@ public class ImgConverter {
 			LOGGER.error("can't prepare img file", e);
 		}
 		return result;
+	}
+	
+	public static boolean checkIsDiplomImageExistForUser(String userId) {
+		
+		File f=new File(Constants.IMG_HOME + userId);
+		return f.exists();
 	}
 }

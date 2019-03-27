@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import com.lazarev.service.DepartmentService;
+import com.lazarev.service.QueryService;
 import com.lazarev.web.Constants;
 
 @WebServlet("/enterQueries")
@@ -18,11 +20,23 @@ public class EnterQueriesServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		LOGGER.trace("enterQueries.doGet()");
+		
+		String department=request.getParameter("dep");
+		
+		request.setAttribute("users", new QueryService().getAllQueriesForDepartment(department));
+		request.setAttribute("departments", new DepartmentService().getAllDep());
+		
 		request.getRequestDispatcher(Constants.PAGE_ADMIN_ENTER_QUERIES).forward(request, response);
 	}
 
 //	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//	
+//		
 //	}
 
+	@Override
+	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		LOGGER.trace("enterQueries.doDelete()"+req.getParameter("queriesId")+req.getAttribute("queriesId"));
+		int queryId=Integer.parseInt(req.getParameter("queriesId"));
+		new QueryService().deleteFromUnconfirmedList(queryId);
+	}
 }

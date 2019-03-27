@@ -88,127 +88,120 @@
 		            error : function(data) {
 		            	alert("error"+data);
 		            }
-		            }
 		         });
 		}
 	</script>
 
-	<div class="jumbotron container theme-showcase" role="main">
+	<div class="jumbotron container" role="main">
 		<div class="jumbotron row">
-			<div class="jumbotron bs-example" data-example-id="simple-table">
-				<c:if test="${isPageForBlocking==true}">
+			<c:if test="${isPageForBlocking==true}">
 
-					<c:if test="${ROLE=='SUPERADMIN'}">
-						<div>Set Marks for group</div>
+				<c:if test="${ROLE=='SUPERADMIN'}">
+					<div>Set Marks for group</div>
 
-						<select>
-							<option>mark1</option>
-							<option>mark2</option>
-							<option>mark3</option>
-						</select>
+					<select>
+						<c:forEach var="mark" items="${universityMarks}">
+							<option value="${mark.id}">${mark.name}</option>
+						</c:forEach>
+					</select>
 
-						<!-- excelSetMarks POST -->
-						<form enctype="multipart/form-data">
-							<input type="file" name="file" size="50" onchange="checking()" />
-							<input type="submit" id="sendFile" style="display: inline-block;"
-								value='<tags:lang text="uploadFile"></tags:lang>' />
-						</form>
-					</c:if>
+					<!-- excelSetMarks POST -->
+					<form enctype="multipart/form-data">
+						<input type="file" name="file" size="50" onchange="checking()" />
+						<input type="submit" id="sendFile" style="display: inline-block;"
+							value='<tags:lang text="uploadFile"></tags:lang>' />
+					</form>
 				</c:if>
-				
-				<!-- filter -->
-				<div>
-					Fio<input type="text" id="filterFio" value="${filterFio}"> 
-					Email<input	type="text" id="filterEmail" value="${filterEmail}"> 
-					Diplom<input type="text" id="filterDiplom" value="${filterDiplom}">
+			</c:if>
 
-					<button onclick="filterUser()">
-						<tags:lang text="find"></tags:lang>
-					</button>
-				</div>
-				
-				<table class="table">
-					<thead>
+			<!-- filter -->
+			<div>
+				Fio<input type="text" id="filterFio" value="${filterFio}">
+				Email<input type="text" id="filterEmail" value="${filterEmail}">
+				Diplom<input type="text" id="filterDiplom" value="${filterDiplom}">
+
+				<button onclick="filterUser()" class="btn btn-success">
+					<tags:lang text="find"></tags:lang>
+				</button>
+			</div>
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th><tags:lang text="id"></tags:lang></th>
+						<th><tags:lang text="fio"></tags:lang></th>
+						<th><tags:lang text="email"></tags:lang></th>
+						<th><tags:lang text="diplom"></tags:lang></th>
+						<th><tags:lang text="operation"></tags:lang></th>
+						<c:if
+							test="${(ROLE=='ADMIN' ||ROLE=='SUPERADMIN') && isPageForBlocking==true}">
+							<th><tags:lang text="setMark"></tags:lang></th>
+						</c:if>
+					</tr>
+				</thead>
+				<tbody>
+
+					<c:forEach var="user" items="${users}">
 						<tr>
-							<th>#</th>
-							<th><tags:lang text="id"></tags:lang></th>
-							<th><tags:lang text="fio"></tags:lang></th>
-							<th><tags:lang text="email"></tags:lang></th>
-							<%--
-							<c:if test="${isPageForBlocking==true}">
-								<th><tags:lang text="count"></tags:lang></th>
-							</c:if>
-							 --%>
-							<th><tags:lang text="diplom"></tags:lang></th>
-							<th><tags:lang text="operation"></tags:lang></th>
+							<th scope="row"></th>
+							<td>${user.id}</td>
+							<td>${user.fio}</td>
+							<td>${user.email}</td>
+							<td>${user.diplom}</td>
+
+							<td><c:choose>
+									<c:when test="${isPageForBlocking==true}">
+										<button type="button" class="btn btn-danger"
+											onclick="banUser('blockUser','${user.id}')">
+											<tags:lang text="banUser"></tags:lang>
+										</button>
+
+									</c:when>
+									<c:otherwise>
+										<button type="button" class="btn btn-danger"
+											onclick="banUser('unblockUser','${user.id}')">
+											<tags:lang text="unBlockUser"></tags:lang>
+										</button>
+									</c:otherwise>
+								</c:choose></td>
 							<c:if
 								test="${(ROLE=='ADMIN' ||ROLE=='SUPERADMIN') && isPageForBlocking==true}">
-								<th>Set Mark</th>
+								<th>
+									<ul>
+										<c:forEach var="mark" items="${user.studentMarks}">
+											<li>${mark.name}<input type="number"
+												value="${mark.mark}" id="${user.id}_${mark.id}">
+												<button onclick="modifyUserMark(${user.id},${mark.id})"
+													class="btn btn-warning">
+													<tags:lang text="update"></tags:lang>
+												</button>
+											</li>
+										</c:forEach>
+									</ul>
+								</th>
 							</c:if>
 						</tr>
-					</thead>
-					<tbody>
+					</c:forEach>
 
-						<c:forEach var="user" items="${users}">
-							<tr>
-								<th scope="row"></th>
-								<td>${user.id}</td>
-								<td>${user.fio}</td>
-								<td>${user.email}</td>
-								<td>${user.diplom}</td>
-								<%--
-								<c:if test="${isPageForBlocking==true}">
-									<td>${user.departmentCount}</td>
-								</c:if>
-								 --%>
-								<td><c:choose>
-										<c:when test="${isPageForBlocking==true}">
-											<button type="button" class="btn btn-danger"
-												onclick="banUser('blockUser','${user.id}')">
-												<tags:lang text="banUser"></tags:lang>
-											</button>
+				</tbody>
+			</table>
 
-										</c:when>
-										<c:otherwise>
-											<button type="button" class="btn btn-danger"
-												onclick="banUser('unblockUser','${user.id}')">
-												<tags:lang text="unBlockUser"></tags:lang>
-											</button>
-										</c:otherwise>
-									</c:choose></td>
-								<c:if
-									test="${(ROLE=='ADMIN' ||ROLE=='SUPERADMIN') && isPageForBlocking==true}">
-									<th>
-										<ul>
-											<c:forEach var="mark" items="${user.studentMarks}">
-												<li>${mark.name}
-												<input type = "number" value="${mark.mark}" id="${user.id}_${mark.id}">
-												<button onclick="modifyUserMark(${user.id},${mark.id})"><tags:lang text="update"></tags:lang></button>
-												</li>
-											</c:forEach>
-										</ul>
-									</th>
-								</c:if>
-							</tr>
-						</c:forEach>
-
-					</tbody>
-				</table>
-
-				<div>
-					<button style="display: inline-block;" onclick="prevPage()">
-						<tags:lang text="prevPage"></tags:lang>
-					</button>
-					<div style="display: inline-block;">
-						<tags:lang text="currPage"></tags:lang>
-						<label>${page}</label>
-					</div>
-					<button style="display: inline-block;" onclick="nextPage()">
-						<tags:lang text="nextPage"></tags:lang>
-					</button>
+			<div>
+				<button style="display: inline-block;" onclick="prevPage()"
+					class="btn btn-primary">
+					<tags:lang text="prevPage"></tags:lang>
+				</button>
+				<div style="display: inline-block;">
+					<tags:lang text="currPage"></tags:lang>
+					<label>${page}</label>
 				</div>
-
+				<button style="display: inline-block;" onclick="nextPage()"
+					class="btn btn-primary">
+					<tags:lang text="nextPage"></tags:lang>
+				</button>
 			</div>
+
 		</div>
 	</div>
 	<%@ include file="/pages/jspf/directive/footer.jspf"%>

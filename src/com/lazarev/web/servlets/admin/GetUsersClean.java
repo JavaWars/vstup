@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import com.lazarev.db.dao.UserDAO;
 import com.lazarev.db.entity.User;
 import com.lazarev.db.entity.extra.UserWithMarks;
+import com.lazarev.service.MarkService;
 import com.lazarev.service.UserService;
 import com.lazarev.web.Constants;
 
@@ -42,8 +43,7 @@ public class GetUsersClean extends HttpServlet {
 		request.setAttribute("filterFio", fio);
 		request.setAttribute("filterDiplom", diplom);
 		request.setAttribute("filterEmail", email);
-		
-		
+		request.setAttribute("universityMarks",new MarkService().getAllMarksSettedByAdmin());
 		
 		request.getRequestDispatcher(Constants.PAGE_ADMIN_ALL_USERS).forward(request, response);
 	}

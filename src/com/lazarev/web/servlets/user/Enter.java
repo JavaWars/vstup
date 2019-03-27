@@ -16,6 +16,8 @@ import com.lazarev.db.dao.SubjectDAO;
 import com.lazarev.db.entity.Department;
 import com.lazarev.db.entity.DepartmentSubject;
 import com.lazarev.web.Constants;
+import com.lazarev.web.json.JsonExtracter;
+import com.lazarev.web.servlets.helper.Helper;
 
 @WebServlet("/enter")
 public class Enter extends HttpServlet {
@@ -45,11 +47,11 @@ public class Enter extends HttpServlet {
 		}
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		LOGGER.debug("Enter#doPost()");
-
-	}
+//	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+//			throws ServletException, IOException {
+//		LOGGER.debug("Enter#doPost()");
+//
+//	}
 
 	private void toError(HttpServletRequest request) {
 		request.setAttribute("errorMessage", "can not enter to the incorrect department");

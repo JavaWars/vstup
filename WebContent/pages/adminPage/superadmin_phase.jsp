@@ -37,7 +37,7 @@
 						<option value="PRE_REGISTRATION">PRE_REGISTRATION</option>
 						<option value="DOCUMENT_SERVE">DOCUMENT_SERVE</option>
 						<option value="RESULT_CHECKING">RESULT_CHECKING</option>
-					</select> <input type="submit" value="ok" />
+					</select> <input type="submit" value="ok" class="btn btn-danger"/>
 				</form>
 			</div>
 

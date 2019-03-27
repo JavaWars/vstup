@@ -17,7 +17,7 @@ import com.lazarev.web.servlets.helper.ImgConverter;
 public class UserPositionDAO extends DAO<UserPosition, Integer> {
 
 	private static final Logger LOGGER = Logger.getLogger(UserPositionDAO.class);
-	private static final String SELECT_DEPARTMENT_FOR_USER = "SELECT departments.* FROM student_department INNER JOIN departments ON student_department.id_department = departments.id where id_student=?";
+	private static final String SELECT_DEPARTMENT_FOR_USER = " call SELECT_DEPARTMENT_FOR_USER(?)";
 	private static final String SELECT_TOTAL_PLACES_IN_DEPARTMENT = "SELECT COUNT(1) FROM student_department where id_department=id_department and student_department.id_department=?";
 	private static final String CALL_SELECT_MY_POSITION_IN_DEPARTMENT = "call getMyPosition(?,?)";
 	private static final String CALL_SELECT_DEPARTMENT_RATING_BY_DEP = "call getUsersPassedDockForDep(?)";
