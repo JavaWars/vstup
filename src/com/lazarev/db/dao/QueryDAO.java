@@ -15,7 +15,7 @@ public class QueryDAO extends DAO<Object, Integer> {
 
 	private static final Logger LOGGER = Logger.getLogger(QueryDAO.class);
 	private static final String SELECT_ALL_NEW_QUERIES = "call getWaitListForDepartment(?)";
-	private static final String DELETE_BY_ID = "delete from `query` where `query`.query_id=?";
+	private static final String DELETE_BY_ID = "call delete_from_query(?)";
 
 	public List<UserMarkQuery> getAllQueriesFromUsersForDepartment(String department) {
 		LOGGER.trace("QueryDAO.getAllQueriesFromUsersForDepartment()");

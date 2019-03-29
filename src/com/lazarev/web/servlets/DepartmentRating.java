@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import com.lazarev.db.dao.UserPositionDAO;
+import com.lazarev.db.entity.Phase;
 import com.lazarev.db.entity.extra.UserTotalMark;
+import com.lazarev.service.PhaseService;
 import com.lazarev.web.Constants;
 
 @WebServlet("/departmentRating")
@@ -27,7 +29,17 @@ public class DepartmentRating extends HttpServlet {
 		String id=request.getParameter("id");
 		if (id!=null){
 			departmnetId=Integer.parseInt(id);
-			List<UserTotalMark> depRating= new UserPositionDAO().getUsersForDepartmentRating(departmnetId);
+			
+			boolean isFinalResult=false;
+			List<UserTotalMark> depRating=null;
+			if (PhaseService.getCurrentPhase()==Phase.RESULT_CHECKING) {
+				isFinalResult=true;
+				depRating= new UserPositionDAO().getUsersForDepartmentRating(departmnetId,isFinalResult);
+			}
+			else {
+				depRating= new UserPositionDAO().getUsersForDepartmentRating(departmnetId,isFinalResult);
+			}
+			
 			request.setAttribute("depRating", depRating);
 			request.setAttribute("id", departmnetId);
 		}

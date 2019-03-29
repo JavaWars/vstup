@@ -1,5 +1,8 @@
 package com.lazarev.db.entity.extra;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import com.lazarev.db.entity.User;
 
 public class UserTotalMark extends User{
@@ -10,6 +13,16 @@ public class UserTotalMark extends User{
 
 	private String file;//imgData64
 	
+	private int position;
+		
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
 	public String getFile() {
 		return file;
 	}
@@ -23,7 +36,8 @@ public class UserTotalMark extends User{
 	}
 
 	public void setMark(double mark) {
-		this.mark = mark;
+		BigDecimal bd = new BigDecimal(mark).setScale(2, RoundingMode.HALF_EVEN);
+		this.mark = bd.doubleValue();
 	}
 
 	@Override

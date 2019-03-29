@@ -20,7 +20,8 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 	private static final String SELECT_DEPARTMENT_FOR_USER = " call SELECT_DEPARTMENT_FOR_USER(?)";
 	private static final String SELECT_TOTAL_PLACES_IN_DEPARTMENT = "SELECT COUNT(1) FROM student_department where id_department=id_department and student_department.id_department=?";
 	private static final String CALL_SELECT_MY_POSITION_IN_DEPARTMENT = "call getMyPosition(?,?)";
-	private static final String CALL_SELECT_DEPARTMENT_RATING_BY_DEP = "call getUsersPassedDockForDep(?)";
+	private static final String CALL_SELECT_USERS_PASS_DOCK_FOR_DEPAPTMENT = "call getUsersPassedDockForDep(?)";
+	private static final String CALL_SELECT_DEPARTMENT_RATING_BY_DEP = "call getUsersRatingForDepartment(?)";
 
 	@Override
 	public UserPosition get(Integer key) {
@@ -32,12 +33,17 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 		return null;
 	}
 
-	public List<UserTotalMark> getUsersForDepartmentRating(Integer departmentId) {
+	public List<UserTotalMark> getUsersForDepartmentRating(Integer departmentId, boolean isFinalResult) {
 		LOGGER.debug("get  department rating for departmentId=" + departmentId);
 		List<UserTotalMark> result = new LinkedList<>();
 
 		prepareConnectionToWork(connection);
-		PreparedStatement preparedStatement = getPreparedStatement(connection, CALL_SELECT_DEPARTMENT_RATING_BY_DEP);
+		PreparedStatement preparedStatement;
+		if (isFinalResult) {
+			preparedStatement = getPreparedStatement(connection, CALL_SELECT_DEPARTMENT_RATING_BY_DEP);
+		} else {
+			preparedStatement = getPreparedStatement(connection, CALL_SELECT_USERS_PASS_DOCK_FOR_DEPAPTMENT);
+		}
 		ResultSet resultSet = null;
 		try {
 			preparedStatement.setInt(1, departmentId);
@@ -71,7 +77,7 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 			connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			result = getByUserId(userId);
 			for (int i = 0; i < result.size(); i++) {
-				setMyPosition(result.get(i), userId);
+				//setMyPosition(result.get(i), userId);
 				setTotalPlaces(result.get(i));
 			}
 			connection.commit();
@@ -184,6 +190,7 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 			position.setName(resultSet.getString("name"));
 			position.setPlaceGov(resultSet.getInt("place_government"));
 			position.setTotaPlace(resultSet.getInt("place_total"));
+			
 		} catch (SQLException e) {
 			LOGGER.error("CAN NOT PREPARE user Position (information about department)", e);
 			throw new MyAppException("something going wrong with db", e);
@@ -193,10 +200,11 @@ public class UserPositionDAO extends DAO<UserPosition, Integer> {
 	}
 
 	private void prepareUserTotalMark(ResultSet resultSet, UserTotalMark userTotalMark) throws SQLException {
-		userTotalMark.setId(resultSet.getInt("id"));// userId
+		userTotalMark.setId(resultSet.getInt("id"));
 		userTotalMark.setName(resultSet.getString("name"));
 		userTotalMark.setSecondName(resultSet.getString("secondName"));
 		userTotalMark.setMark(resultSet.getDouble("mark"));
 		userTotalMark.setFile(ImgConverter.fileNameTo64BaseData(String.valueOf(userTotalMark.getId())));
+		userTotalMark.setPosition(resultSet.getInt("position"));
 	}
 }

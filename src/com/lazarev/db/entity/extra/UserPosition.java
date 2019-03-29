@@ -7,7 +7,6 @@ public class UserPosition extends Department {
 	private static final long serialVersionUID = 3062162506098459953L;
 
 	private int myPlace;
-
 	private int totalPeople;
 
 	public int getMyPlace() {

@@ -35,7 +35,7 @@
 					<tbody>
 						<c:forEach items="${depRating}" var="position">
 							<tr>
-								<th scope="row"></th>
+								<th>${position.position}</th>
 								<td>${position.name}</td>
 								<td>${position.secondName}</td>
 								<td>${position.mark}</td>
